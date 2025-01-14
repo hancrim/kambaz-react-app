@@ -7,6 +7,7 @@ export default function Labs() {
   return (
     <div>
       <h1>Labs</h1>
+      <h2>Hannah Crimmins</h2>
       <TOC />
       <Routes>
         <Route path="/" element={<Navigate to="Lab1" />} />
@@ -14,6 +15,15 @@ export default function Labs() {
         <Route path="Lab2" element={<Lab2 />} />
         <Route path="Lab3" element={<Lab3 />} />
       </Routes>
+      <div id="wd-github">
+        <h4>GitHub Repo</h4>
+        {"Please "}
+        <a href="https://github.com/hancrim/kambaz-react-app" id="wd-github">
+          click here
+        </a>
+        {" to get GitHub Repo"}
+        <br />
+      </div>
     </div>
   );
 }

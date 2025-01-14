@@ -40,8 +40,10 @@ export default function Dashboard() {
           >
             <img src="/images/sunset.jpg" width={200} />
             <div>
-              <h5> IS1555 Design </h5>
-              <p className="wd-dashboard-course-title">Design Development </p>
+              <h5> IS2000 Info Principles </h5>
+              <p className="wd-dashboard-course-title">
+                Principles of Information Science{" "}
+              </p>
               <button> Go </button>
             </div>
           </Link>
@@ -53,8 +55,8 @@ export default function Dashboard() {
           >
             <img src="/images/light_blue.jpeg" width={200} height={150} />
             <div>
-              <h5> First-Year Writing </h5>
-              <p className="wd-dashboard-course-title">Design Development </p>
+              <h5> ENGW1000 First-Year Writing </h5>
+              <p className="wd-dashboard-course-title">First Year Writing</p>
               <button> Go </button>
             </div>
           </Link>
@@ -67,7 +69,9 @@ export default function Dashboard() {
             <img src="/images/light_pink.png" width={200} height={150} />
             <div>
               <h5> CS2500 Fundies </h5>
-              <p className="wd-dashboard-course-title">Design Development </p>
+              <p className="wd-dashboard-course-title">
+                Fundementals of Computer Science{" "}
+              </p>
               <button> Go </button>
             </div>
           </Link>
@@ -80,7 +84,7 @@ export default function Dashboard() {
             <img src="/images/light_green.jpeg" width={200} height={150} />
             <div>
               <h5> IS3800 Empirical Research Methods </h5>
-              <p className="wd-dashboard-course-title">Design Development </p>
+              <p className="wd-dashboard-course-title">Research </p>
               <button> Go </button>
             </div>
           </Link>
@@ -93,7 +97,7 @@ export default function Dashboard() {
             <img src="/images/water.jpg" height={150} width={200} />
             <div>
               <h5> CS5200 Graduate Algorithms </h5>
-              <p className="wd-dashboard-course-title">Design Development </p>
+              <p className="wd-dashboard-course-title">Algorithms & Data</p>
               <button> Go </button>
             </div>
           </Link>
