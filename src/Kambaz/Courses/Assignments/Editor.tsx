@@ -4,7 +4,7 @@ export default function AssignmentEditor() {
       <h3>
         <label htmlFor="wd-name">Assignment Name</label>
       </h3>
-      <input id="wd-name" value="A1 - ENV + HTML" />
+      <input id="wd-name" defaultValue="A1 - ENV + HTML" />
       <br />
       <br />
       <textarea id="wd-description" cols={40} rows={10}>
@@ -21,6 +21,20 @@ export default function AssignmentEditor() {
             <input id="wd-points" value={100} />
           </td>
         </tr>
+        <br />
+        <tr>
+          <td align="right" valign="top">
+            <label htmlFor="wd-group">Assignment Group</label>
+          </td>
+          <select id="wd-group">
+            <option selected value="ASSIGMENTS">
+              ASSIGNMENTS
+            </option>
+            <option value="GROUP_ONE">GROUP ONE</option>
+            <option value="OTHER">OTHER </option>
+          </select>
+        </tr>
+        <br />
         <tr>
           <td align="right" valign="top">
             <label htmlFor="wd-display-grade-as">Display Grade as</label>
@@ -34,6 +48,7 @@ export default function AssignmentEditor() {
             <option value="OTHER">Other</option>
           </select>
         </tr>
+        <br />
         <tr>
           <td align="right" valign="top">
             <label htmlFor="wd-submission-type">Sumbission Type</label>
@@ -74,7 +89,7 @@ export default function AssignmentEditor() {
           <td>
             <label htmlFor="wd-assign-to">Assign To</label>
             <br />
-            <input id="wd-assign-to" value={"Everyone"} />
+            <input id="wd-assign-to" defaultValue={"Everyone"} />
           </td>
         </tr>
         <tr>
@@ -85,9 +100,10 @@ export default function AssignmentEditor() {
             <br />
             <label htmlFor="wd-due-date">Due</label>
             <br />
-            <input type="date" value="2024-05-13" id="wd-due-date" />
+            <input type="date" defaultValue="2024-05-13" id="wd-due-date" />
           </td>
         </tr>
+        <br />
         <tr>
           <td align="right" valign="top">
             <label htmlFor="wd-available-from"></label>
@@ -106,14 +122,14 @@ export default function AssignmentEditor() {
                 <td>
                   <input
                     type="date"
-                    value="2024-05-06"
+                    defaultValue="2024-05-06"
                     id="wd-available-from"
                   />
                 </td>
                 <td>
                   <input
                     type="date"
-                    value="2024-05-20"
+                    defaultValue="2024-05-20"
                     id="wd-available-until"
                   />
                 </td>
@@ -127,6 +143,7 @@ export default function AssignmentEditor() {
         <tr>
           <td id="wd-submit-btns" align="right">
             <button>Cancel</button>
+            &nbsp;
             <button>Save</button>
           </td>
         </tr>
