@@ -1,0 +1,29 @@
+.bold-text {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.red-text {
+  color: red;
+  font-size: 17px;
+}
+
+.bold-title {
+  font-weight: bold;
+}
+
+.body-text {
+  font-size: 17px;
+}
+
+.gray-border {
+  border-color: rgb(179, 177, 177);
+  border-width: 2pt;
+  border-style: solid;
+  padding: 8pt;
+  overflow: hidden;
+}
+
+td {
+  padding: 8pt;
+}
