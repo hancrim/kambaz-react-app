@@ -15,19 +15,19 @@ import "./styles.css";
 
 export default function AssignmentEditor() {
   return (
-    <div id="wd-assignments-editor">
-      <div style={{ paddingLeft: "10px" }}>
+    <div
+      id="wd-assignments-editor"
+      style={{ paddingLeft: "50px", paddingRight: "200px" }}
+    >
+      <div>
         <Form.Group className="mb-3" controlId="textarea2">
           <Form.Label>Assignment Name</Form.Label>
-          <Form.Control
-            as="textarea"
-            style={{ height: "10px", width: "800px" }}
-            placeholder="A1"
-          />
+          <Form.Control as="textarea" className="w-100" placeholder="A1" />
           <br />
           <Form.Control
             as="textarea"
-            style={{ height: "100px", width: "800px" }}
+            className="w-100"
+            style={{ height: "100px" }}
             placeholder="Enter description here..."
           />
         </Form.Group>
@@ -42,8 +42,8 @@ export default function AssignmentEditor() {
           >
             Points
           </Form.Label>
-          <Col sm={6}>
-            <Form.Control id="wd-points" placeholder="100" />
+          <Col>
+            <Form.Control type="number" id="wd-points" placeholder="100" />
           </Col>
         </Form.Group>
 
@@ -56,7 +56,7 @@ export default function AssignmentEditor() {
           >
             Assignment Group
           </Form.Label>
-          <Col sm={6}>
+          <Col>
             <FormSelect id="wd-group">
               <option selected>ASSIGNMENTS</option>
               <option value="1">One</option>
@@ -75,7 +75,7 @@ export default function AssignmentEditor() {
           >
             Display Grade as
           </Form.Label>
-          <Col sm={6}>
+          <Col>
             <FormSelect id="wd-display-grade-as">
               <option selected>Percentage</option>
               <option value="1">Decimal</option>
@@ -97,7 +97,6 @@ export default function AssignmentEditor() {
             Sumbission Type
           </Form.Label>
           <Col
-            sm={6}
             style={{
               outline: "2px solid gray",
               padding: "10px",
@@ -175,7 +174,6 @@ export default function AssignmentEditor() {
             Assign
           </FormLabel>
           <Col
-            sm={6}
             style={{
               outline: "2px solid gray",
               padding: "10px",
@@ -184,7 +182,7 @@ export default function AssignmentEditor() {
             }}
           >
             <FormLabel className="bold-title" htmlFor="wd-assign-to">
-              Assign
+              Assign To
             </FormLabel>
             <FormControl id="wd-assign-to" placeholder="Assign To" />
             <br />
@@ -237,7 +235,7 @@ export default function AssignmentEditor() {
       >
         <Form.Group as={Row} className="mb-3">
           <Col sm={2}></Col>
-          <Col sm={6}>
+          <Col>
             <Button
               variant="danger"
               size="lg"
@@ -248,7 +246,7 @@ export default function AssignmentEditor() {
             </Button>
             <Button
               id="wd-collapse-all"
-              className="btn-secondary float-end"
+              className="btn-secondary float-end me-2"
               size="lg"
             >
               Cancel

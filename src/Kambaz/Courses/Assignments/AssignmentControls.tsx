@@ -9,6 +9,7 @@ export default function AssignmentControls() {
         className="d-flex"
         style={{ justifyContent: "space-between", paddingLeft: "5px" }}
       >
+        {/* DO IN BOOTSTRAP?? InputGroup */}
         <div id="right-wrapper" style={{ display: "inline-block" }}>
           <FaSearch
             id="wd-search-assignment"
