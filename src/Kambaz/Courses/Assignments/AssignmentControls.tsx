@@ -17,10 +17,14 @@ export default function AssignmentControls() {
             <FormControl placeholder="Search..." />
           </InputGroup>
         </div>
-        <div id="left-wrapper" style={{ display: "inline-block" }}>
+        <div
+          id="left-wrapper"
+          className="d-flex"
+          style={{ display: "inline-block" }}
+        >
           <Button
             id="wd-view-progress"
-            className="me-2 btn-secondary in-line-block"
+            className="me-2 btn-secondary in-line-block text-nowrap"
             size="lg"
           >
             <FaPlus
@@ -32,7 +36,7 @@ export default function AssignmentControls() {
           <Button
             variant="danger"
             size="lg"
-            className="me-1 in-line-block"
+            className="me-1 in-line-block text-nowrap"
             id="wd-add-module-btn"
           >
             <FaPlus
