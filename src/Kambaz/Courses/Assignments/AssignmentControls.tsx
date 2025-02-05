@@ -1,5 +1,5 @@
 import { FaPlus } from "react-icons/fa6";
-import { Button } from "react-bootstrap";
+import { Button, FormControl, InputGroup } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 export default function AssignmentControls() {
   return (
@@ -9,26 +9,14 @@ export default function AssignmentControls() {
         className="d-flex"
         style={{ justifyContent: "space-between", paddingLeft: "5px" }}
       >
-        {/* DO IN BOOTSTRAP?? InputGroup */}
-        <div id="right-wrapper" style={{ display: "inline-block" }}>
-          <FaSearch
-            id="wd-search-assignment"
-            className="position-absolute"
-            style={{
-              height: "45px",
-              color: "gray",
-              marginLeft: "10px",
-            }}
-          />
-          <input
-            placeholder="Search..."
-            id="wd-search-assignment"
-            className="form-control"
-            type="text"
-            style={{ width: "400px", height: "45px", paddingLeft: "2.1rem" }}
-          />
+        <div>
+          <InputGroup size="lg" className="mb-3 w-40 flex-nowrap">
+            <InputGroup.Text>
+              <FaSearch />
+            </InputGroup.Text>
+            <FormControl placeholder="Search..." />
+          </InputGroup>
         </div>
-
         <div id="left-wrapper" style={{ display: "inline-block" }}>
           <Button
             id="wd-view-progress"
