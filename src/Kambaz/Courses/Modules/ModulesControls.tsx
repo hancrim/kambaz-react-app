@@ -3,7 +3,10 @@ import GreenCheckmark from "./GreenCheckmark";
 import { Button, Dropdown } from "react-bootstrap";
 export default function ModulesControls() {
   return (
-    <div id="wd-modules-controls" className="text-nowrap">
+    <div
+      id="wd-modules-controls"
+      className="justify-content-end overflow-auto d-flex"
+    >
       <Button
         variant="danger"
         size="lg"
