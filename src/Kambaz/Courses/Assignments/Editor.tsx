@@ -3,7 +3,6 @@ import {
   Col,
   Form,
   FormCheck,
-  FormControl,
   FormGroup,
   FormLabel,
   FormSelect,
@@ -11,6 +10,7 @@ import {
 } from "react-bootstrap";
 import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
+import { HiOutlineX } from "react-icons/hi";
 import "./styles.css";
 
 export default function AssignmentEditor() {
@@ -22,13 +22,21 @@ export default function AssignmentEditor() {
       <div>
         <Form.Group className="mb-3" controlId="textarea2">
           <Form.Label>Assignment Name</Form.Label>
-          <Form.Control as="textarea" className="w-100" placeholder="A1" />
+          <Form.Control
+            as="textarea"
+            className="w-100"
+            placeholder="Assignment Name"
+            value="A1"
+          />
           <br />
           <Form.Control
             as="textarea"
             className="w-100"
-            style={{ height: "100px" }}
-            placeholder="Enter description here..."
+            style={{ height: "300px" }}
+            placeholder={"Enter description here..."}
+            value={
+              "This assignment is available online.\n \nSubmit a link to the landing page of your web application running on Netlify. \n \n The landing page should include the following:\n \n• Your full name and section\n• Links to each of the lab assignments\n• Link to the Kambas application\n• Links to all of the relevent source code repositories "
+            }
           />
         </Form.Group>
       </div>
@@ -184,7 +192,24 @@ export default function AssignmentEditor() {
             <FormLabel className="bold-title" htmlFor="wd-assign-to">
               Assign To
             </FormLabel>
-            <FormControl id="wd-assign-to" placeholder="Assign To" />
+            {/* HERE */}
+
+            <div className="position-relative d-flex align-items-center border rounded p-2">
+              <div className="badge rounded-pill bg-light text-dark d-flex align-items-center me-2">
+                Everyone
+                <span className="ms-1 text-muted ">
+                  {" "}
+                  <HiOutlineX />{" "}
+                </span>
+              </div>
+              <input
+                type="text"
+                id="wd-assign-to"
+                className="form-control border-0 shadow-none p-0"
+                placeholder="Assign To"
+              />
+            </div>
+
             <br />
             <FormGroup as={Row} className="mb-3">
               <Col>
