@@ -17,7 +17,7 @@ export default function AssignmentEditor() {
   return (
     <div
       id="wd-assignments-editor"
-      style={{ paddingLeft: "50px", paddingRight: "200px" }}
+      style={{ paddingLeft: "50px", paddingRight: "150px" }}
     >
       <div>
         <Form.Group className="mb-3" controlId="textarea2">
