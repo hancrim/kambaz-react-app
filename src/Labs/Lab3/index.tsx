@@ -26,8 +26,12 @@ import TernaryOperator from "./TernaryOperator";
 import TodoList from "./todo/ToDoList";
 import VariablesAndConstants from "./VariablesAndConstants";
 import VariableTypes from "./VariableTypes";
+import PathParameters from "./PathParameters";
+import AddPathParameters from "./AddPathParameters";
 
 export default function Lab3() {
+  console.log("Hello World!");
+
   return (
     <div id="wd-lab3" className="ms-2">
       <h3>Lab 3</h3>
@@ -66,6 +70,8 @@ export default function Lab3() {
         excepturi consectetur. Modi omnis minus sequi maiores, provident
         voluptates.
       </Highlight>
+      <PathParameters />
+      <AddPathParameters />
     </div>
   );
 }
