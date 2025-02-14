@@ -12,8 +12,14 @@ import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
 import { HiOutlineX } from "react-icons/hi";
 import "./styles.css";
+import { Link, useParams } from "react-router-dom";
+import { assignments } from "../../Database";
 
 export default function AssignmentEditor() {
+  const { aid, cid } = useParams();
+  const assignment = assignments.find(
+    (assignment: any) => assignment._id === aid
+  );
   return (
     <div
       id="wd-assignments-editor"
@@ -26,7 +32,7 @@ export default function AssignmentEditor() {
             as="textarea"
             className="w-100"
             placeholder="Assignment Name"
-            value="A1"
+            value={assignment ? assignment.title : ""}
           />
           <br />
           <Form.Control
@@ -34,9 +40,7 @@ export default function AssignmentEditor() {
             className="w-100"
             style={{ height: "300px" }}
             placeholder={"Enter description here..."}
-            value={
-              "This assignment is available online.\n \nSubmit a link to the landing page of your web application running on Netlify. \n \n The landing page should include the following:\n \n• Your full name and section\n• Links to each of the lab assignments\n• Link to the Kambas application\n• Links to all of the relevent source code repositories "
-            }
+            value={assignment ? assignment.description : ""}
           />
         </Form.Group>
       </div>
@@ -51,7 +55,12 @@ export default function AssignmentEditor() {
             Points
           </Form.Label>
           <Col>
-            <Form.Control type="number" id="wd-points" placeholder="100" />
+            <Form.Control
+              type="number"
+              id="wd-points"
+              placeholder="100"
+              value={assignment ? assignment.points : ""}
+            />
           </Col>
         </Form.Group>
 
@@ -192,7 +201,7 @@ export default function AssignmentEditor() {
             <FormLabel className="bold-title" htmlFor="wd-assign-to">
               Assign To
             </FormLabel>
-            {/* HERE */}
+            {/* HERE MAKE DYNAMIC*/}
 
             <div className="position-relative d-flex align-items-center border rounded p-2">
               <div className="badge rounded-pill bg-light text-dark d-flex align-items-center me-2">
@@ -218,6 +227,7 @@ export default function AssignmentEditor() {
                 </FormLabel>
                 <input
                   placeholder="May 13, 2024, 11:59PM"
+                  value={assignment ? assignment.avail_date : ""}
                   id="wd-available-from"
                   className="form-control"
                   type="date"
@@ -230,6 +240,7 @@ export default function AssignmentEditor() {
                 </FormLabel>
                 <input
                   placeholder="May 13, 2024, 11:59PM"
+                  value={assignment ? assignment.available_until : ""}
                   id="wd-available-until"
                   className="form-control"
                   type="date"
@@ -242,6 +253,7 @@ export default function AssignmentEditor() {
             </label>
             <input
               placeholder="May 13, 2024, 11:59PM"
+              value={assignment ? assignment.due_date : ""}
               id="wd-due-date"
               className="form-control"
               type="date"
@@ -261,21 +273,25 @@ export default function AssignmentEditor() {
         <Form.Group as={Row} className="mb-3">
           <Col sm={2}></Col>
           <Col>
-            <Button
-              variant="danger"
-              size="lg"
-              id="wd-add-module-btn"
-              className="float-end"
-            >
-              Save
-            </Button>
-            <Button
-              id="wd-collapse-all"
-              className="btn-secondary float-end me-2"
-              size="lg"
-            >
-              Cancel
-            </Button>
+            <Link to={`/Kambaz/Courses/${cid}/Assignments`}>
+              <Button
+                variant="danger"
+                size="lg"
+                id="wd-add-module-btn"
+                className="float-end"
+              >
+                Save
+              </Button>
+            </Link>
+            <Link to={`/Kambaz/Courses/${cid}/Assignments`}>
+              <Button
+                id="wd-collapse-all"
+                className="btn-secondary float-end me-2"
+                size="lg"
+              >
+                Cancel
+              </Button>
+            </Link>
           </Col>
         </Form.Group>
       </div>

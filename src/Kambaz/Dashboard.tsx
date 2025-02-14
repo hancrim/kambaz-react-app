@@ -19,7 +19,7 @@ export default function Dashboard() {
                 >
                   <Card.Img
                     variant="top"
-                    src="/images/light_blue.jpeg"
+                    src={`/images/${course.image}`}
                     width="100%"
                     height={160}
                   />
