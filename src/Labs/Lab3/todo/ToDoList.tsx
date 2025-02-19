@@ -1,4 +1,4 @@
-import TodoItem from "./ToDoItem";
+import TodoItem from "./TodoItem.tsx";
 import todos from "./todos.json";
 export default function TodoList() {
   return (
