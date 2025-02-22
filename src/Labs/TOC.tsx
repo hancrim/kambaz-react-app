@@ -34,6 +34,15 @@ export default function TOC() {
         </Nav.Link>
       </Nav.Item>
       <Nav.Item>
+        <Nav.Link
+          href="#/Labs/Lab4"
+          id="wd-a4"
+          active={pathname.includes("Lab4")}
+        >
+          Lab 4
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
         <Nav.Link href="#/Kambaz">Kambaz</Nav.Link>
       </Nav.Item>
       <Nav.Item id="wd-github">
