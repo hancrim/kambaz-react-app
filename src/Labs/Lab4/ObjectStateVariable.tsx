@@ -7,10 +7,12 @@ export default function ObjectStateVariable() {
       <pre>{JSON.stringify(person, null, 2)}</pre>
       <input
         defaultValue={person.name}
+        className="form-control mb-2"
         onChange={(e) => setPerson({ ...person, name: e.target.value })}
       />
       <input
         defaultValue={person.age}
+        className="form-control"
         onChange={(e) =>
           setPerson({ ...person, age: parseInt(e.target.value) })
         }

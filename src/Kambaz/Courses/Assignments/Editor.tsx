@@ -12,14 +12,46 @@ import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
 import { HiOutlineX } from "react-icons/hi";
 import "./styles.css";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { assignments } from "../../Database";
+import { addAssignment, updateAssignment } from "./reducer";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
 
 export default function AssignmentEditor() {
   const { aid, cid } = useParams();
-  const assignment = assignments.find(
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const currentAssignment = assignments.find(
     (assignment: any) => assignment._id === aid
   );
+
+  const [assignment, setAssignment] = useState<any>(
+    currentAssignment || {
+      _id: "new",
+      title: "New Title",
+      description: "New Description",
+      points: 0,
+      course: cid,
+      avail_date: "2025-05-20",
+      available_until: "2025-05-21",
+      due_date: "2025-05-21",
+      due_date_text: "hello",
+      avail_date_text: "HERE",
+    }
+  );
+
+  const handleSave = () => {
+    if (aid != "new") {
+      dispatch(updateAssignment(assignment));
+    } else {
+      dispatch(addAssignment(assignment));
+    }
+    navigate(`/Kambaz/Courses/${cid}/Assignments`);
+    console.log(assignment);
+  };
+
   return (
     <div
       id="wd-assignments-editor"
@@ -33,6 +65,9 @@ export default function AssignmentEditor() {
             className="w-100"
             placeholder="Assignment Name"
             value={assignment ? assignment.title : ""}
+            onChange={(e) =>
+              setAssignment({ ...assignment, title: e.target.value })
+            }
           />
           <br />
           <Form.Control
@@ -41,6 +76,9 @@ export default function AssignmentEditor() {
             style={{ height: "300px" }}
             placeholder={"Enter description here..."}
             value={assignment ? assignment.description : ""}
+            onChange={(e) =>
+              setAssignment({ ...assignment, description: e.target.value })
+            }
           />
         </Form.Group>
       </div>
@@ -60,6 +98,9 @@ export default function AssignmentEditor() {
               id="wd-points"
               placeholder="100"
               value={assignment ? assignment.points : ""}
+              onChange={(e) =>
+                setAssignment({ ...assignment, points: e.target.value })
+              }
             />
           </Col>
         </Form.Group>
@@ -232,6 +273,9 @@ export default function AssignmentEditor() {
                   className="form-control"
                   type="date"
                   style={{ width: "100%", height: "45px" }}
+                  onChange={(e) =>
+                    setAssignment({ ...assignment, avail_date: e.target.value })
+                  }
                 />
               </Col>
               <Col>
@@ -245,6 +289,12 @@ export default function AssignmentEditor() {
                   className="form-control"
                   type="date"
                   style={{ width: "100%", height: "45px" }}
+                  onChange={(e) =>
+                    setAssignment({
+                      ...assignment,
+                      available_until: e.target.value,
+                    })
+                  }
                 />
               </Col>
             </FormGroup>
@@ -258,6 +308,12 @@ export default function AssignmentEditor() {
               className="form-control"
               type="date"
               style={{ width: "100%", height: "45px" }}
+              onChange={(e) =>
+                setAssignment({
+                  ...assignment,
+                  due_date: e.target.value,
+                })
+              }
             />
           </Col>
         </Form.Group>
@@ -279,6 +335,7 @@ export default function AssignmentEditor() {
                 size="lg"
                 id="wd-add-module-btn"
                 className="float-end"
+                onClick={handleSave}
               >
                 Save
               </Button>

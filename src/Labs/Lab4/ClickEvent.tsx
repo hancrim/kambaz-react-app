@@ -1,3 +1,5 @@
+import { Button } from "react-bootstrap";
+
 const hello = () => {
   alert("Hello World!");
 };
@@ -8,13 +10,13 @@ export default function ClickEvent() {
   return (
     <div id="wd-click-event">
       <h2>Click Event</h2>
-      <button onClick={hello} id="wd-hello-world-click">
+      <Button onClick={hello} id="wd-hello-world-click">
         Hello World!
-      </button>
-      <button onClick={() => lifeIs("Good!")} id="wd-life-is-good-click">
+      </Button>
+      <Button onClick={() => lifeIs("Good!")} id="wd-life-is-good-click">
         Life is Good!
-      </button>
-      <button
+      </Button>
+      <Button
         onClick={() => {
           hello();
           lifeIs("Great!");
@@ -22,7 +24,7 @@ export default function ClickEvent() {
         id="wd-life-is-great-click"
       >
         Life is Great!
-      </button>
+      </Button>
       <hr />
     </div>
   );
