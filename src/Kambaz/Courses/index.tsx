@@ -11,7 +11,9 @@ export default function Courses() {
   const { cid } = useParams();
   const { pathname } = useLocation();
   const { courses } = useSelector((state: any) => state.courseReducer);
-  const course = courses.find((course) => course._id === cid);
+  const course = courses.find(
+    (course: { _id: string | undefined }) => course._id === cid
+  );
 
   return (
     <div id="wd-courses">
