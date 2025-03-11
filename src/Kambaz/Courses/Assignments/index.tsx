@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ListGroup } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import { PiNotePencilDuotone } from "react-icons/pi";

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Button,
   Col,
@@ -13,9 +14,8 @@ import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
 import { HiOutlineX } from "react-icons/hi";
 import "./styles.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { assignments } from "../../Database";
 import { addAssignment, updateAssignment } from "./reducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
 export default function AssignmentEditor() {
@@ -23,6 +23,9 @@ export default function AssignmentEditor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const assignments = useSelector(
+    (state: any) => state.assignmentReducer.assignments
+  );
   const currentAssignment = assignments.find(
     (assignment: any) => assignment._id === aid
   );
@@ -45,6 +48,8 @@ export default function AssignmentEditor() {
   const handleSave = () => {
     if (aid != "new") {
       dispatch(updateAssignment(assignment));
+      console.log("Here");
+      console.log(assignment);
     } else {
       dispatch(addAssignment(assignment));
     }

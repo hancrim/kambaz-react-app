@@ -144,14 +144,14 @@ export default function Dashboard() {
           )
         </h2>
 
-        {isStudent && (
-          <Button
-            className="ms-auto"
-            onClick={() => setShowCourses(!showCourses)}
-          >
-            Enrollments
-          </Button>
-        )}
+        {/* {isStudent && ( */}
+        <Button
+          className="ms-auto"
+          onClick={() => setShowCourses(!showCourses)}
+        >
+          Enrollments
+        </Button>
+        {/* )} */}
       </div>
 
       <hr />
