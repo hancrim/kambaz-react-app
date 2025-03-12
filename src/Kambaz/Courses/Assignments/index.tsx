@@ -17,6 +17,13 @@ export default function Assignments() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser && currentUser.role === "FACULTY";
+  const handleAssignmentClick = (assignmentId: string) => {
+    if (isFaculty) {
+      return `/Kambaz/Courses/${cid}/Assignments/${assignmentId}`;
+    } else {
+      return `/Kambaz/Courses/${cid}/Assignments`;
+    }
+  };
 
   return (
     <div id="wd-assignments">
@@ -56,7 +63,7 @@ export default function Assignments() {
                     </div>
                     <div style={{ paddingLeft: "7px" }}>
                       <Link
-                        to={`/Kambaz/Courses/${cid}/Assignments/${assignment._id}`}
+                        to={handleAssignmentClick(assignment._id)}
                         className="bold-title"
                         style={{ textDecoration: "none", color: "black" }}
                       >
