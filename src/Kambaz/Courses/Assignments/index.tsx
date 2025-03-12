@@ -72,6 +72,12 @@ export default function Assignments() {
                         {""}
                         {assignment.avail_date_text}
                       </span>
+                      <span> | </span>
+                      <span className="body-text">
+                        {""}
+                        {assignment.points}
+                      </span>
+                      <span className="body-text"> points </span>
                       <br />
                       <span className="bold-text">Due </span>
                       <span className="body-text">
