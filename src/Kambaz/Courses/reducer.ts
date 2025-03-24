@@ -20,6 +20,7 @@ const modulesSlice = createSlice({
     },
     deleteCourse: (state, { payload: courseId }) => {
       state.courses = state.courses.filter((c: any) => c._id !== courseId);
+      console.log("Here: \n", state.courses);
     },
     updateCourse: (state, { payload: course }) => {
       state.courses = state.courses.map((c: any) =>
