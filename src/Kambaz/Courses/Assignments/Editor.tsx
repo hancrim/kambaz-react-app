@@ -14,11 +14,16 @@ import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
 import { HiOutlineX } from "react-icons/hi";
 import "./styles.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { addAssignment, updateAssignment } from "./reducer";
+import { updateAssignment } from "./reducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
+import * as assignmentsClient from "./client";
 
-export default function AssignmentEditor() {
+export default function AssignmentEditor({
+  addAssignment,
+}: {
+  addAssignment: (assignment: any) => void;
+}) {
   const { aid, cid } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,18 +45,17 @@ export default function AssignmentEditor() {
       avail_date: "2025-05-20",
       available_until: "2025-05-21",
       due_date: "2025-05-21",
-      due_date_text: "hello",
-      avail_date_text: "HERE",
+      due_date_text: "May 21 2025",
+      avail_date_text: "May 21 2025",
     }
   );
 
-  const handleSave = () => {
-    if (aid != "new") {
+  const handleSave = async (assignment: any) => {
+    if (aid !== "new") {
+      await assignmentsClient.updateAssignment(assignment);
       dispatch(updateAssignment(assignment));
-      console.log("Here");
-      console.log(assignment);
     } else {
-      dispatch(addAssignment(assignment));
+      addAssignment(assignment);
     }
     navigate(`/Kambaz/Courses/${cid}/Assignments`);
     console.log(assignment);
@@ -279,7 +283,11 @@ export default function AssignmentEditor() {
                   type="date"
                   style={{ width: "100%", height: "45px" }}
                   onChange={(e) =>
-                    setAssignment({ ...assignment, avail_date: e.target.value })
+                    setAssignment({
+                      ...assignment,
+                      avail_date: e.target.value,
+                      avail_date_text: new Date(e.target.value).toDateString(),
+                    })
                   }
                 />
               </Col>
@@ -317,6 +325,7 @@ export default function AssignmentEditor() {
                 setAssignment({
                   ...assignment,
                   due_date: e.target.value,
+                  due_date_text: new Date(e.target.value).toDateString(),
                 })
               }
             />
@@ -340,7 +349,7 @@ export default function AssignmentEditor() {
                 size="lg"
                 id="wd-add-module-btn"
                 className="float-end"
-                onClick={handleSave}
+                onClick={() => handleSave({ ...assignment, editing: false })}
               >
                 Save
               </Button>

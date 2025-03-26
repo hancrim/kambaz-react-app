@@ -1,17 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
-import { assignments } from "../../Database";
-import { v4 as uuidv4 } from "uuid";
 const initialState = {
-  assignments: assignments,
+  assignments: [],
 };
 const modulesSlice = createSlice({
   name: "assignments",
   initialState,
   reducers: {
+    setAssignments: (state, action) => {
+      state.assignments = action.payload;
+    },
+
     addAssignment: (state, { payload: assignment }) => {
       const newAssignment: any = {
-        _id: uuidv4(),
+        _id: "new",
         title: assignment.title,
         points: assignment.points,
         course: assignment.course,
@@ -32,10 +33,14 @@ const modulesSlice = createSlice({
     updateAssignment: (state, { payload: assignment }) => {
       state.assignments = state.assignments.map((a: any) =>
         a._id === assignment._id ? { ...a, ...assignment } : a
-      );
+      ) as any;
     },
   },
 });
-export const { addAssignment, deleteAssignment, updateAssignment } =
-  modulesSlice.actions;
+export const {
+  addAssignment,
+  deleteAssignment,
+  updateAssignment,
+  setAssignments,
+} = modulesSlice.actions;
 export default modulesSlice.reducer;

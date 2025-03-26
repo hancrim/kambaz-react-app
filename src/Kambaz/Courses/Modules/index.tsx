@@ -35,6 +35,7 @@ export default function Modules() {
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser && currentUser.role === "FACULTY";
+
   const createModuleForCourse = async () => {
     if (!cid) return;
     const newModule = { name: moduleName, course: cid };

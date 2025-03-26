@@ -9,6 +9,38 @@ export const findMyCourses = async () => {
   return data;
 };
 
+// Enroll in a course
+export const enrollInCourse = async (courseId: string) => {
+  try {
+    const response = await axiosWithCredentials.post(
+      `${USERS_API}/current/courses/${courseId}/enroll`,
+      {
+        courseId,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error enrolling in course:", error);
+    throw error;
+  }
+};
+
+// Unenroll from a course
+export const unenrollFromCourse = async (courseId: string) => {
+  try {
+    const response = await axiosWithCredentials.post(
+      `${USERS_API}/current/courses/${courseId}/unenroll`,
+      {
+        courseId,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error unenrolling from course:", error);
+    throw error;
+  }
+};
+
 export const signin = async (credentials: any) => {
   const response = await axiosWithCredentials.post(
     `${USERS_API}/signin`,

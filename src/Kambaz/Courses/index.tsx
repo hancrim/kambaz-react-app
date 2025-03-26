@@ -6,6 +6,9 @@ import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
 import { FaAlignJustify } from "react-icons/fa";
 import PeopleTable from "./People/Table";
+import { addAssignment } from "./Assignments/reducer";
+import * as coursesClient from "./client";
+import { useDispatch } from "react-redux";
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();
@@ -13,6 +16,17 @@ export default function Courses({ courses }: { courses: any[] }) {
   const course = courses.find(
     (course: { _id: string | undefined }) => course._id === cid
   );
+
+  const dispatch = useDispatch();
+  const createAssignmentForCourse = async (newAssignment: any) => {
+    if (!cid) return;
+    const assignment = await coursesClient.createAssignmentForCourse(
+      cid,
+      newAssignment
+    );
+
+    dispatch(addAssignment(assignment));
+  };
 
   return (
     <div id="wd-courses">
@@ -31,7 +45,12 @@ export default function Courses({ courses }: { courses: any[] }) {
             <Route path="Home" element={<Home />} />
             <Route path="Modules" element={<Modules />} />
             <Route path="Assignments" element={<Assignments />} />
-            <Route path="Assignments/:aid/" element={<AssignmentEditor />} />
+            <Route
+              path="Assignments/:aid/"
+              element={
+                <AssignmentEditor addAssignment={createAssignmentForCourse} />
+              }
+            />
             <Route path="People" element={<PeopleTable />} />
           </Routes>
         </div>

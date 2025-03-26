@@ -10,26 +10,32 @@ import { useSelector, useDispatch } from "react-redux";
 
 export default function Dashboard({
   courses,
+  allCourses,
   course,
   setCourse,
   addNewCourse,
   deleteCourse,
   updateCourse,
+  addNewEnrollment,
+  removeOldEnrollment,
 }: {
   courses: any[];
+  allCourses: any[];
   course: any;
   setCourse: (course: any) => void;
   addNewCourse: () => void;
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
+  addNewEnrollment: (course: any) => void;
+  removeOldEnrollment: (course: any) => void;
 }) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  //const { enrollments } = useSelector((state: any) => state.enrollmentReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isFaculty = currentUser && currentUser.role === "FACULTY";
   const isStudent = currentUser && currentUser.role === "STUDENT";
   const [showCourses, setShowCourses] = useState(false);
+  const coursesToDisplay = showCourses ? allCourses : courses;
 
   const handleUpdateCourse = () => {
     updateCourse();
@@ -45,7 +51,7 @@ export default function Dashboard({
   const handleAddNewCourse = (course: any) => {
     addNewCourse();
     const newCourseId = course._id;
-
+    addNewEnrollment(course);
     dispatch(
       addEnrollment({
         courseId: newCourseId,
@@ -64,6 +70,28 @@ export default function Dashboard({
 
   const isEnrolled = (courseId: string) => {
     return courses.some((course) => course._id === courseId);
+  };
+
+  const handleAddEnrollment = (course: any) => {
+    // dispatch(
+    //   addEnrollment({
+    //     courseId: course._id,
+    //     userId: currentUser._id,
+    //   })
+    // );
+    addNewEnrollment(course);
+    console.log("HERE 1");
+  };
+
+  const handleRemoveEnrollment = (course: any) => {
+    console.log("HERE 23");
+    removeOldEnrollment(course);
+    // dispatch(
+    //   removeEnrollment({
+    //     courseId: course._id,
+    //     userId: currentUser._id,
+    //   })
+    // );
   };
 
   return (
@@ -110,17 +138,7 @@ export default function Dashboard({
       <hr />
       <div className="d-flex">
         <h2 id="wd-dashboard-published">
-          Published Courses (
-          {showCourses
-            ? courses.length
-            : courses.filter((course: { _id: any }) =>
-                courses.some(
-                  (enrollment: { user: any; course: any }) =>
-                    enrollment.user === currentUser._id &&
-                    enrollment.course === course._id
-                )
-              ).length}
-          )
+          Published Courses ({coursesToDisplay.length})
         </h2>
 
         <Button
@@ -134,7 +152,7 @@ export default function Dashboard({
       <hr />
       <div id="wd-dashboard-courses">
         <Row xs={1} md={5} className="g-4">
-          {courses.map(
+          {coursesToDisplay.map(
             (course: {
               _id: string;
               image: any;
@@ -178,36 +196,15 @@ export default function Dashboard({
                           {" "}
                           {!isEnrolled(course._id) && (
                             <Button
-                              onClick={() =>
-                                dispatch(
-                                  addEnrollment({
-                                    courseId: course._id,
-                                    userId: currentUser._id,
-                                  })
-                                )
-                              }
+                              onClick={() => handleAddEnrollment(course)}
                               className="btn-success ms-2"
                             >
                               Enroll
                             </Button>
                           )}
-                          {/* CHECK BELOW - AI  */}
                           {isEnrolled(course._id) && (
                             <Button
-                              onClick={() =>
-                                dispatch(
-                                  removeEnrollment(
-                                    courses.find(
-                                      (enrollment: {
-                                        user: any;
-                                        course: any;
-                                      }) =>
-                                        enrollment.user === currentUser._id &&
-                                        enrollment.course === course._id
-                                    )._id
-                                  )
-                                )
-                              }
+                              onClick={() => handleRemoveEnrollment(course)}
                               className="btn-danger ms-2"
                             >
                               Unenroll

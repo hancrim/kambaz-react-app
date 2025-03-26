@@ -4,7 +4,7 @@ export const fetchWelcomeMessage = async () => {
   const response = await axios.get(`${REMOTE_SERVER}/lab5/welcome`);
   return response.data;
 };
-export const removeTodo = async (todo: any) => {
+export const xremoveTodo = async (todo: any) => {
   const response = await axios.get(`${TODOS_API}/${todo.id}/delete`);
   return response.data;
 };
