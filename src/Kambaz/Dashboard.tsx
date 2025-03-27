@@ -2,11 +2,7 @@
 import { Row, Col, Card, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { addEnrollment, removeEnrollment } from "./Courses/People/reducer";
-import { useSelector, useDispatch } from "react-redux";
-
-// NEED TO FIX THIS TO SUPPORT ENROLLMENTS
-// SHOWING ALL CLASSES ETC.
+import { useSelector } from "react-redux";
 
 export default function Dashboard({
   courses,
@@ -29,9 +25,8 @@ export default function Dashboard({
   addNewEnrollment: (course: any) => void;
   removeOldEnrollment: (course: any) => void;
 }) {
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser && currentUser.role === "FACULTY";
   const isStudent = currentUser && currentUser.role === "STUDENT";
   const [showCourses, setShowCourses] = useState(false);
@@ -50,14 +45,7 @@ export default function Dashboard({
 
   const handleAddNewCourse = (course: any) => {
     addNewCourse();
-    const newCourseId = course._id;
     addNewEnrollment(course);
-    dispatch(
-      addEnrollment({
-        courseId: newCourseId,
-        userId: currentUser._id,
-      })
-    );
   };
 
   const handleGoToCourse = (courseId: string) => {
@@ -73,25 +61,11 @@ export default function Dashboard({
   };
 
   const handleAddEnrollment = (course: any) => {
-    // dispatch(
-    //   addEnrollment({
-    //     courseId: course._id,
-    //     userId: currentUser._id,
-    //   })
-    // );
     addNewEnrollment(course);
-    console.log("HERE 1");
   };
 
   const handleRemoveEnrollment = (course: any) => {
-    console.log("HERE 23");
     removeOldEnrollment(course);
-    // dispatch(
-    //   removeEnrollment({
-    //     courseId: course._id,
-    //     userId: currentUser._id,
-    //   })
-    // );
   };
 
   return (
@@ -190,7 +164,6 @@ export default function Dashboard({
                       >
                         Go
                       </Button>
-                      {/* will have to fix below to only do for enrolled/unerolled courses */}
                       {isStudent && showCourses && (
                         <div>
                           {" "}

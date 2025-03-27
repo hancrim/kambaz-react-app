@@ -51,23 +51,20 @@ export default function Kambaz() {
     number: "New Number",
     startDate: "2023-09-10",
     endDate: "2023-12-15",
+    image: "green.jpeg",
     description: "New Description",
   });
 
-  const addNewCourse = () => {
-    dispatch(addCourse(course));
-
-    setCourses([
-      ...courses,
-      {
-        _id: course._id,
-        name: course.name,
-        number: course.number,
-        description: course.description,
-        image: "green.jpeg",
-      },
-    ]);
+  const addNewCourse = async () => {
+    try {
+      const newCourse = await userClient.createCourse(course);
+      dispatch(addCourse(newCourse));
+      setCourses([...courses, newCourse]);
+    } catch (error) {
+      console.error("Course Creation failed:", error);
+    }
   };
+
   const handleEnroll = async (courseToEnroll: any) => {
     if (!courses.some((course) => course._id === courseToEnroll._id)) {
       setCourses([...courses, courseToEnroll]);
@@ -86,15 +83,13 @@ export default function Kambaz() {
     setCourses(courses.filter((course) => course._id !== courseToUnenroll._id));
     try {
       await userClient.unenrollFromCourse(courseToUnenroll._id);
-
-      // Remove from local state
       dispatch(removeEnrollment(courseToUnenroll._id));
     } catch (error) {
       console.error("Unenrollment failed:", error);
     }
   };
   const deleteCourse = async (courseId: string) => {
-    const status = await courseClient.deleteCourse(courseId);
+    await courseClient.deleteCourse(courseId);
     setCourses(courses.filter((course) => course._id !== courseId));
   };
 
