@@ -9,8 +9,8 @@ import PeopleTable from "./People/Table";
 import { addAssignment } from "./Assignments/reducer";
 import * as coursesClient from "./client";
 import { useDispatch } from "react-redux";
-import Quizzes from "./Quizzes";
-import QuizDetails from "./Quizzes/QuizDetails";
+//import Quizzes from "./Quizzes";
+//import QuizDetails from "./Quizzes/QuizDetails";
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();
@@ -53,8 +53,8 @@ export default function Courses({ courses }: { courses: any[] }) {
                 <AssignmentEditor addAssignment={createAssignmentForCourse} />
               }
             />
-            <Route path="Quizzes" element={<Quizzes />} />
-            <Route path="Quizzes/:qid" element={<QuizDetails />} />
+            {/* <Route path="Quizzes" element={<Quizzes />} /> */}
+            {/* <Route path="Quizzes/:qid" element={<QuizDetails />} /> */}
             <Route path="People" element={<PeopleTable />} />
           </Routes>
         </div>

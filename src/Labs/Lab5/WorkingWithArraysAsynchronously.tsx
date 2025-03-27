@@ -9,7 +9,7 @@ import { FaPlusCircle } from "react-icons/fa";
 export default function WorkingWithArraysAsynchronously() {
   const [todos, setTodos] = useState<any[]>([]);
   const removeTodo = async (todo: any) => {
-    const updatedTodos = await client.removeTodo(todo);
+    const updatedTodos = await client.deleteTodo(todo);
     setTodos(updatedTodos);
   };
   const editTodo = (todo: any) => {
