@@ -1,0 +1,9 @@
+[{ "_id": "Q101", "title": "Propulsion Quiz", "course": "RS101",
+    "points": "100",  "description": "This quiz is to test propulsion calculations.",
+    "due_date_text": "May 13 at 11:59pm", "avail_date_text": "May 6 at 12:00am",
+    "due_date":"2025-05-13", "avail_date":"2025-05-06",
+    "available_until":"2025-05-14",
+    "lock_questions": "No", "webcam_required": "No", "one_question_at_time":"Yes",
+    "acess_code":"","num_attempts":"1", "multiple_attempts":"No", "time_limit":"20",
+    "shuffle_answers":"Yes", "assignment_group":"Quizzes", "Points":"100","quiz_type":"Graded",
+    "show_correct_bool":"No", "show_correct_date":""}]
