@@ -1,23 +1,54 @@
-import { Link } from "react-router";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { setCurrentUser } from "./reducer";
+import { useDispatch } from "react-redux";
+import * as client from "./client";
+// import * as db from "../Database";
 
 export default function Signin() {
+  const [credentials, setCredentials] = useState<any>({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const signin = async () => {
+    const user = await client.signin(credentials);
+    if (!user) return;
+    dispatch(setCurrentUser(user));
+    navigate("/Kambaz/Dashboard");
+  };
+
   return (
     <div id="wd-signin-screen">
-      <h3>Sign in</h3>
-      <input placeholder="username" className="wd-username" /> <br />
+      <h1>Sign in</h1>
       <input
+        value={credentials.username}
+        onChange={(e) =>
+          setCredentials({ ...credentials, username: e.target.value })
+        }
+        className="form-control mb-2"
+        placeholder="username"
+        id="wd-username"
+      />
+      <input
+        value={credentials.password}
+        onChange={(e) =>
+          setCredentials({ ...credentials, password: e.target.value })
+        }
+        className="form-control mb-2"
         placeholder="password"
         type="password"
-        className="wd-password"
-      />{" "}
-      <br />
-      <Link to="/Kambaz/Dashboard" id="wd-signin-btn">
+        id="wd-password"
+      />
+      <button
+        onClick={signin}
+        id="wd-signin-btn"
+        className="btn btn-primary w-100"
+      >
         {" "}
         Sign in{" "}
-      </Link>{" "}
-      <br />
-      <Link to="/Kambaz/Account/Signup" id="wd-signup-link">
-        Sign up
+      </button>
+      <Link id="wd-signup-link" to="/Kambaz/Account/Signup">
+        {" "}
+        Sign up{" "}
       </Link>
     </div>
   );
