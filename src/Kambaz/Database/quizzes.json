@@ -1,4 +1,4 @@
-[{ "_id": "Q101", "title": "Propulsion Quiz", "course": "RS101",
+[{ "_id": "Q101", "title": "Propulsion Quiz", "course": "RS101", "isPublished":"Yes",
     "points": "100",  "description": "This quiz is to test propulsion calculations.",
     "due_date_text": "May 13 at 11:59pm", "avail_date_text": "May 6 at 12:00am",
     "due_date":"2025-05-13", "avail_date":"2025-05-06",

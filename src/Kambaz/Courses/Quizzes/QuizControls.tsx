@@ -13,9 +13,10 @@ export default function QuizControls() {
   const isFaculty = currentUser && currentUser.role === "FACULTY";
   //const navigate = useNavigate();
   //const { cid } = useParams();
-  // const handleAddQuiz = () => {
-  //   navigate(`/Kambaz/Courses/${cid}/Quizzes/new`);
-  // };
+  const handleAddQuiz = () => {
+    console.log('Add Quiz button clicked');
+    // navigate(`/Kambaz/Courses/${cid}/Quizzes/new`);
+  };
 
   return (
     <div id="wd-quiz-controls">
@@ -47,7 +48,7 @@ export default function QuizControls() {
               size="lg"
               className="me-1 in-line-block text-nowrap"
               id="wd-add-module-btn"
-              //onClick={handleAddQuiz}
+              onClick={handleAddQuiz}
             >
               <FaPlus
                 className="position-relative me-2"
