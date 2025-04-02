@@ -164,27 +164,6 @@ export default function Dashboard({
                       >
                         Go
                       </Button>
-                      {isStudent && showCourses && (
-                        <div>
-                          {" "}
-                          {!isEnrolled(course._id) && (
-                            <Button
-                              onClick={() => handleAddEnrollment(course)}
-                              className="btn-success ms-2"
-                            >
-                              Enroll
-                            </Button>
-                          )}
-                          {isEnrolled(course._id) && (
-                            <Button
-                              onClick={() => handleRemoveEnrollment(course)}
-                              className="btn-danger ms-2"
-                            >
-                              Unenroll
-                            </Button>
-                          )}
-                        </div>
-                      )}
                       {isFaculty && (
                         <Button
                           onClick={() => {
@@ -209,6 +188,27 @@ export default function Dashboard({
                         </Button>
                       )}
                     </div>
+
+                    {showCourses && (
+                      <div className="d-flex pt-2">
+                        {!isEnrolled(course._id) && (
+                          <Button
+                            onClick={() => handleAddEnrollment(course)}
+                            className="btn-success"
+                          >
+                            Enroll
+                          </Button>
+                        )}
+                        {isEnrolled(course._id) && (
+                          <Button
+                            onClick={() => handleRemoveEnrollment(course)}
+                            className="btn-danger"
+                          >
+                            Unenroll
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </Card.Body>
                 </Card>
               </Col>
