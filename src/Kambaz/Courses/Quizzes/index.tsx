@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ListGroup } from "react-bootstrap";
 import { GoTriangleDown } from "react-icons/go";
 import { quizzes } from "../../Database";
@@ -84,7 +85,7 @@ export default function Quizzes() {
                   </div>
                   {isFaculty && (
                     <div className="ms-auto">
-                      <QuizControlButtons />
+                      <QuizControlButtons quiz={quiz} />
                     </div>
                   )}
                 </div>
