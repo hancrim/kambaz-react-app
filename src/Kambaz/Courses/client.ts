@@ -41,3 +41,22 @@ export const createAssignmentForCourse = async (
   console.log("HERE HI ");
   return response.data;
 };
+
+export const findQuizzesForCourse = async (
+  // courseId: string
+) => {
+  // const response = await axios.get(`${COURSES_API}/${courseId}/quizzes`);
+  // return response.data;
+  // TODO add this
+};
+
+export const createQuizForCourse = async (
+  // courseId: string,
+) => {
+  // const response = await axios.post(
+  //   `${COURSES_API}/${courseId}/quizzes`,
+  //   quiz
+  // );
+  // return response.data;
+  // TODO add this
+}

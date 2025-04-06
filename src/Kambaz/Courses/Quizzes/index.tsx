@@ -1,17 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ListGroup } from "react-bootstrap";
 import { GoTriangleDown } from "react-icons/go";
-import { quizzes } from "../../Database";
 import QuizControls from "./QuizControls";
 import { PiNotePencilDuotone } from "react-icons/pi";
-//import { Link } from "react-router";
 import { useSelector } from "react-redux";
 import QuizControlButtons from "./QuizControlButtons";
 import { Link, useParams } from "react-router-dom";
+// import { quizzes } from "../../Database/quizzes.json";
+// import { setQuizzes } from "./reducer";
+import { useEffect } from "react";
 
 export default function Quizzes() {
   const { cid } = useParams();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { quizzes } = useSelector(
+    (state: any) => state.quizReducer
+  );
+  // const dispatch = useDispatch();
+  const fetchQuizzes = async () => {
+    // const quizzes = await coursesClient.findQuizzesForCourse(
+    //   cid as string
+    // ); 
+    // TODO update this once database is ready
+    // dispatch(setQuizzes(quizzes));
+  };
   const isFaculty = currentUser && currentUser.role === "FACULTY";
   const handleQuizClick = (quizId: string) => {
     if (isFaculty) {
@@ -21,6 +33,11 @@ export default function Quizzes() {
       return `/Kambaz/Courses/${cid}/Quizzes`;
     }
   };
+
+    useEffect(() => {
+      fetchQuizzes();
+    }, []);
+
   return (
     <div>
       <QuizControls />
