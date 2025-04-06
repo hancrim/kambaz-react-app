@@ -15,7 +15,7 @@ export default function QuizControls() {
   //const navigate = useNavigate();
   //const { cid } = useParams();
   const handleAddQuiz = () => {
-    console.log('Add Quiz button clicked');
+    console.log("Add Quiz button clicked");
     // navigate(`/Kambaz/Courses/${cid}/Quizzes/new`);
   };
 
@@ -29,6 +29,7 @@ export default function QuizControls() {
           flex: "no-wrap",
         }}
       >
+        {/* TODO - implement searching feature */}
         <div>
           <InputGroup size="lg" className="w-40 d-flex">
             <InputGroup.Text>
