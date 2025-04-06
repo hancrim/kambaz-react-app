@@ -49,6 +49,7 @@ export default function Profile() {
           />
           <FormControl
             defaultValue={profile.firstName}
+            placeholder="First Name"
             id="wd-firstname"
             className="mb-2"
             onChange={(e) =>
@@ -57,6 +58,7 @@ export default function Profile() {
           />
           <FormControl
             defaultValue={profile.lastName}
+            placeholder="Last Name"
             id="wd-lastname"
             className="mb-2"
             onChange={(e) =>
@@ -73,17 +75,18 @@ export default function Profile() {
           <FormControl
             defaultValue={profile.email}
             id="wd-email"
+            placeholder="Email"
             className="mb-2"
             onChange={(e) => setProfile({ ...profile, email: e.target.value })}
           />
           <select
             onChange={(e) => setProfile({ ...profile, role: e.target.value })}
             className="form-control mb-2"
+            value={profile.role}
             id="wd-role"
           >
-            <option value="USER">User</option>{" "}
             <option value="ADMIN">Admin</option>
-            <option value="FACULTY">Faculty</option>{" "}
+            <option value="FACULTY">Faculty</option>
             <option value="STUDENT">Student</option>
           </select>
           <Button onClick={updateProfile} className="btn-primary w-100 mb-2">
