@@ -21,9 +21,10 @@
     "shuffle_answers": "Yes",
     "assignment_group": "Quizzes",
     "Points": "100",
-    "quiz_type": "Graded",
+    "quiz_type": "Graded Quiz",
     "show_correct_bool": "No",
     "show_correct_date": "",
+    "instructions":"Take the quiz using a calculator",
     "questions": [
       {
         "question_text": "What is the thrust of a rocket with a mass flow rate of 10 kg/s and an exhaust velocity of 3000 m/s?",
