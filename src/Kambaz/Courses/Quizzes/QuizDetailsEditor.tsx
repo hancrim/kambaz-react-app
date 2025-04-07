@@ -10,7 +10,7 @@ import {
   Row,
 } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router";
+import { Form, Link, useParams } from "react-router";
 import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
 import { HiOutlineX } from "react-icons/hi";
@@ -46,9 +46,9 @@ export default function QuizDetailsEditor() {
     >
       <div>
         <FormGroup className="mb-3" controlId="textarea2">
-          <FormLabel>Quiz Name</FormLabel>
           <FormControl
             as="textarea"
+            rows={1}
             className="w-100"
             placeholder="Quiz Name"
             value={quiz ? quiz.title : ""}
@@ -56,6 +56,12 @@ export default function QuizDetailsEditor() {
           />
           <br />
           {/* TODO - add from github example editor - look at piazza */}
+          <FormLabel
+            htmlFor="wd-quiz-instructions"
+            style={{ textAlign: "right" }}
+          >
+            Quiz Instructions:
+          </FormLabel>
           <FormControl
             as="textarea"
             className="w-100"
@@ -144,45 +150,86 @@ export default function QuizDetailsEditor() {
             style={{ textAlign: "right" }}
             htmlFor="wd-shuffle"
           >
-            Shuffle Answers
+            {"Options"}
           </FormLabel>
           <Col>
-            <FormSelect
+            <FormCheck
+              type="checkbox"
               id="wd-shuffle"
-              value={quiz ? quiz.shuffle_answers : ""}
+              label="Shuffle Answers"
+              checked={quiz ? quiz.shuffle_answers === "Yes" : false}
               onChange={(e) =>
-                setQuiz({ ...quiz, shuffle_answers: e.target.value })
+                setQuiz({
+                  ...quiz,
+                  shuffle_answers: e.target.checked ? "Yes" : "No",
+                })
               }
+            />
+            <div className="d-flex">
+              <FormCheck
+                className="me-2 mt-3"
+                type="checkbox"
+                id="wd-time"
+                label="Time Limit"
+                checked={quiz ? quiz.time_limit_bool === "Yes" : false}
+                onChange={(e) =>
+                  setQuiz({
+                    ...quiz,
+                    time_limit_bool: e.target.checked ? "Yes" : "No",
+                  })
+                }
+              />
+              {quiz && quiz.time_limit_bool === "Yes" && (
+                <div className="d-flex">
+                  <FormControl
+                    type="number"
+                    id="wd-time-limit-minutes"
+                    placeholder="Min"
+                    value={quiz.time_limit || "20"}
+                    onChange={(e) =>
+                      setQuiz({
+                        ...quiz,
+                        time_limit: e.target.value,
+                      })
+                    }
+                    style={{ marginTop: "10px", width: "60px" }}
+                  />
+                  <div className="ms-3 mt-3">Minutes</div>
+                </div>
+              )}
+            </div>
+            <div
+              className=" mt-2 border border-dark rounded"
+              id="wd-multiple-attempts"
             >
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </FormSelect>
+              <FormCheck
+                className="mt-2 ms-2 mb-2"
+                type="checkbox"
+                id="wd-multiple-attempts"
+                label="Multiple Attempts"
+                checked={quiz ? quiz.multiple_attempts === "Yes" : false}
+                onChange={(e) =>
+                  setQuiz({
+                    ...quiz,
+                    multiple_attempts: e.target.checked ? "Yes" : "No",
+                  })
+                }
+              />
+            </div>
           </Col>
         </FormGroup>
+      </div>
 
+      <div>
         <FormGroup as={Row} className="mb-3">
           <FormLabel
             column
             sm={2}
             style={{ textAlign: "right" }}
-            htmlFor="wd-display-grade-as"
+            htmlFor="wd-available-from"
           >
-            Display Grade as
+            Assign{" "}
           </FormLabel>
-          <Col>
-            <FormSelect id="wd-display-grade-as">
-              <option selected>Percentage</option>
-              <option value="1">Decimal</option>
-              <option value="2">Fraction</option>
-              <option value="3">Other</option>
-            </FormSelect>
-          </Col>
-        </FormGroup>
-      </div>
-
-      {/* TODO - fix all below with correct fields in example json */}
-      <div>
-        <FormGroup as={Row} className="mb-3">
           <Col
             style={{
               outline: "2px solid gray",
@@ -213,6 +260,7 @@ export default function QuizDetailsEditor() {
                   }
                 />
               </Col>
+
               <Col>
                 <FormLabel className="bold-title" htmlFor="wd-available-until">
                   Until
