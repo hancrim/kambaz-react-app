@@ -17,6 +17,7 @@
     "acess_code": "",
     "num_attempts": "1",
     "multiple_attempts": "No",
+    "time_limit_bool": "Yes",
     "time_limit": "20",
     "shuffle_answers": "Yes",
     "assignment_group": "Quizzes",
