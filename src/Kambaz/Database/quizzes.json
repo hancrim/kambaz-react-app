@@ -14,7 +14,7 @@
     "lock_questions": "No",
     "webcam_required": "No",
     "one_question_at_time": "Yes",
-    "acess_code": "",
+    "access_code": "",
     "num_attempts": "1",
     "multiple_attempts": "No",
     "time_limit_bool": "Yes",

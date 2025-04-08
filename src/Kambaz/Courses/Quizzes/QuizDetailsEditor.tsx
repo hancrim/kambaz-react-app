@@ -10,10 +10,9 @@ import {
   Row,
 } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { Form, Link, useParams } from "react-router";
-import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
-import FormCheckLabel from "react-bootstrap/esm/FormCheckLabel";
-import { HiOutlineX } from "react-icons/hi";
+import { Link, useParams } from "react-router";
+import Editor from "react-simple-wysiwyg";
+
 import { useState } from "react";
 export default function QuizDetailsEditor() {
   const { cid, qid } = useParams();
@@ -27,16 +26,20 @@ export default function QuizDetailsEditor() {
     }
   );
 
-  const handleTitleChange = (e: any) => {
-    console.log(e.target.value);
-    setQuiz({ ...quiz, title: e.target.value });
-    // add dispatch to update quiz in redux store
-    // add call to API to update quiz in database
-  };
-
   //   TODO below implement save function
   function handleSave(): void {
     console.log("Save button clicked");
+  }
+
+  function handleSavePublish(): void {
+    console.log("Save & Publish button clicked");
+    // TODO - implement save and publish function
+  }
+
+  const [instructionsValue, setValue] = useState(quiz.instructions || "");
+
+  function onChange(e) {
+    setValue(e.target.value);
   }
 
   return (
@@ -44,7 +47,7 @@ export default function QuizDetailsEditor() {
       id="wd-quiz-editor"
       style={{ paddingLeft: "50px", paddingRight: "150px" }}
     >
-      <div>
+      <div id="wd-quiz-editor-header">
         <FormGroup className="mb-3" controlId="textarea2">
           <FormControl
             as="textarea"
@@ -52,24 +55,19 @@ export default function QuizDetailsEditor() {
             className="w-100"
             placeholder="Quiz Name"
             value={quiz ? quiz.title : ""}
-            onChange={handleTitleChange}
+            onChange={(e) => setQuiz({ ...quiz, title: e.target.value })}
           />
           <br />
           {/* TODO - add from github example editor - look at piazza */}
-          <FormLabel
-            htmlFor="wd-quiz-instructions"
-            style={{ textAlign: "right" }}
-          >
+          <FormLabel style={{ textAlign: "right" }}>
             Quiz Instructions:
           </FormLabel>
-          <FormControl
-            as="textarea"
-            className="w-100"
-            style={{ height: "300px" }}
-            placeholder={"Enter instructions..."}
-            value={quiz ? quiz.instructions : ""}
-            onChange={(e) => setQuiz({ ...quiz, instructions: e.target.value })}
+          <Editor
+            id="wd-quiz-instructions"
+            value={instructionsValue || "Enter Instructions here"}
+            onChange={onChange}
           />
+
           <FormGroup as={Row} className="mt-3 mb-3">
             <FormLabel
               column
@@ -121,7 +119,7 @@ export default function QuizDetailsEditor() {
           </FormGroup>
         </FormGroup>
       </div>
-      <div>
+      <div id="wd-quiz-editor-details">
         <FormGroup as={Row} className="mb-3">
           {/* TODO - should this be active calculation of sum of all points in quiz? Prob yes so
             implement */}
@@ -143,7 +141,7 @@ export default function QuizDetailsEditor() {
             />
           </Col>
         </FormGroup>
-        <FormGroup id="wd-shuffle" as={Row} className="mb-3">
+        <FormGroup id="wd-detail-settings" as={Row} className="mb-3">
           <FormLabel
             column
             sm={2}
@@ -216,6 +214,119 @@ export default function QuizDetailsEditor() {
                 }
               />
             </div>
+            <div className="d-flex" id="wd-answers-details">
+              <FormGroup>
+                <FormLabel
+                  column
+                  sm={2}
+                  style={{ textAlign: "right" }}
+                  htmlFor="wd-shuffle"
+                >
+                  {""}
+                </FormLabel>
+                <Col>
+                  <div className="d-flex">
+                    <FormCheck
+                      className="mt-2 mb-2"
+                      type="checkbox"
+                      id="wd-show-correct-answers"
+                      label="Show Correct Answers"
+                      checked={quiz ? quiz.show_correct_bool === "Yes" : false}
+                      onChange={(e) =>
+                        setQuiz({
+                          ...quiz,
+                          show_correct_bool: e.target.checked ? "Yes" : "No",
+                        })
+                      }
+                    />
+                    {quiz && quiz.show_correct_bool === "Yes" && (
+                      <div className="d-flex">
+                        <input
+                          placeholder="May 13, 2024, 11:59PM"
+                          value={quiz ? quiz.show_correct_date : ""}
+                          id="wd-show-correct-date"
+                          className="form-control ms-2"
+                          type="date"
+                          style={{ width: "100%", height: "45px" }}
+                          onChange={(e) =>
+                            setQuiz({
+                              ...quiz,
+                              show_correct_date: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <FormCheck
+                    className="mt-2 mb-2"
+                    type="checkbox"
+                    id="wd-one-question-at-a-time"
+                    label="One Question at a Time"
+                    checked={quiz ? quiz.one_question_at_time === "Yes" : false}
+                    onChange={(e) =>
+                      setQuiz({
+                        ...quiz,
+                        one_question_at_time: e.target.checked ? "Yes" : "No",
+                      })
+                    }
+                  />
+                  {/* TODO Add in default as NO for new quiz */}
+                  <FormCheck
+                    className="mt-2 mb-2"
+                    type="checkbox"
+                    id="wd-web-cam"
+                    label="Webcam Required"
+                    checked={quiz ? quiz.webcam_required === "Yes" : false}
+                    onChange={(e) =>
+                      setQuiz({
+                        ...quiz,
+                        webcam_required: e.target.checked ? "Yes" : "No",
+                      })
+                    }
+                  />
+                  {/* TODO Add in default as NO for new quiz */}
+                  <FormCheck
+                    className="mt-2 mb-2"
+                    type="checkbox"
+                    id="wd-lock-questions"
+                    label="Lock Questions After Answering"
+                    checked={quiz ? quiz.lock_questions === "Yes" : false}
+                    onChange={(e) =>
+                      setQuiz({
+                        ...quiz,
+                        lock_questions: e.target.checked ? "Yes" : "No",
+                      })
+                    }
+                  />
+                </Col>
+              </FormGroup>
+            </div>
+          </Col>
+        </FormGroup>
+      </div>
+      <div id="wd-quiz-editor-access-code">
+        <FormGroup as={Row} className="mb-3">
+          <FormLabel
+            column
+            sm={2}
+            style={{ textAlign: "right" }}
+            htmlFor="wd-access-code"
+          >
+            Access Code
+          </FormLabel>
+          <Col>
+            <FormControl
+              as="textarea"
+              rows={1}
+              className="w-100"
+              placeholder="Access Code"
+              value={quiz ? quiz.access_code : ""}
+              onChange={(e) =>
+                setQuiz({ ...quiz, access_code: e.target.value })
+              }
+            />
           </Col>
         </FormGroup>
       </div>
@@ -315,23 +426,33 @@ export default function QuizDetailsEditor() {
           <Col>
             <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`}>
               <Button
-                variant="danger"
+                id="wd-save-publsish"
+                className="btn-danger float-end ms-2 me-2"
                 size="lg"
-                id="wd-add-module-btn"
-                className="float-end"
-                onClick={handleSave}
+                onClick={handleSavePublish}
               >
-                Save
+                Save & Publish
               </Button>
-            </Link>
-            <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`}>
-              <Button
-                id="wd-collapse-all"
-                className="btn-secondary float-end me-2"
-                size="lg"
-              >
-                Cancel
-              </Button>
+              <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`}>
+                <Button
+                  variant="danger"
+                  size="lg"
+                  id="wd-save"
+                  className="float-end"
+                  onClick={handleSave}
+                >
+                  Save
+                </Button>
+              </Link>
+              <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`}>
+                <Button
+                  id="wd-cancel"
+                  className="btn-secondary float-end me-2"
+                  size="lg"
+                >
+                  Cancel
+                </Button>
+              </Link>
             </Link>
           </Col>
         </FormGroup>
