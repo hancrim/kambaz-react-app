@@ -61,7 +61,7 @@ export default function QuizViewer() {
     questions: [],
   };
 
-  const isOneQuestionAtATime = quiz.one_question_at_time === "Yes";
+  const isOneQuestionAtATime = false;
 
   const [currentQuestion, setCurrentQuestion] = useState(1);
 
@@ -96,6 +96,7 @@ export default function QuizViewer() {
           currentQuestion={currentQuestion}
           question={{
             body: quiz.questions[currentQuestion - 1].question_text,
+            type: quiz.questions[currentQuestion - 1].question_type,
             answers: quiz.questions[currentQuestion - 1].question_answer,
           }}
         />
@@ -108,6 +109,7 @@ export default function QuizViewer() {
                 currentQuestion={index + 1}
                 question={{
                   body: q.question_text,
+                  type: q.question_type,
                   answers: q.question_answer,
                 }}
               />

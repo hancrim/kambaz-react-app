@@ -9,7 +9,9 @@ const QuestionBox = ({
   currentQuestion: any;
   question: any;
 }) => {
-  return (
+    const requiresInputBox = question.type === "Fill in the Blank";
+    console.log(" question", JSON.stringify(question));
+    return (
     <Row className="align-items-start">
       <Col xs="auto" className="pt-2 pe-0">
         <FaBookmark></FaBookmark>
@@ -36,11 +38,12 @@ const QuestionBox = ({
           >
             <Col>
               <ListGroup>
+                {!requiresInputBox && (<div>
                 {question.answers.map((answer: any, index: any) => (
                   <ListGroup.Item key={index}>
                     {answer.answer_text}
                   </ListGroup.Item>
-                ))}
+                ))}</div>)}
               </ListGroup>
             </Col>
           </Row>

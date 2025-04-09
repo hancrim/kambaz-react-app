@@ -50,21 +50,8 @@
         "question_type": "Fill in the Blank",
         "question_points": 1,
         "question_answer": [
-          { "answer_text": "10000 s", "is_correct": true },
-          { "answer_text": "1000 s", "is_correct": false },
-          { "answer_text": "5000 s", "is_correct": false },
-          { "answer_text": "2000 s", "is_correct": false }
-        ]
-      },
-      {
-        "question_text": "What is the equation for thrust?",
-        "question_type": "Short Answer",
-        "question_points": 1,
-        "question_answer": [
-          {
-            "answer_text": "Thrust = mass flow rate * exhaust velocity",
-            "is_correct": true
-          }
+          { "answer_text": "10 s", "is_correct": true },
+          { "answer_text": "10000 ms", "is_correct": true }
         ]
       }
     ]
