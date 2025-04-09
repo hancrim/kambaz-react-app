@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import Quizzes from "./Quizzes";
 import QuizDetails from "./Quizzes/QuizDetails";
 import QuizViewer from "./Quizzes/QuizViewer";
+import QuizEditor from "./Quizzes/QuizEditor";
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();
@@ -56,7 +57,11 @@ export default function Courses({ courses }: { courses: any[] }) {
             />
             <Route path="Quizzes" element={<Quizzes />} />
             <Route path="Quizzes/:qid" element={<QuizDetails />} />
-            <Route path="Quizzes/:qid/Viewer/:isPreview" element={<QuizViewer />} />
+            <Route path="Quizzes/:qid/Editor" element={<QuizEditor />} />
+            <Route
+              path="Quizzes/:qid/Viewer/:isPreview"
+              element={<QuizViewer />}
+            />
             <Route path="People" element={<PeopleTable />} />
           </Routes>
         </div>

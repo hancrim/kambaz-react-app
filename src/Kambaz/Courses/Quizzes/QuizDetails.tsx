@@ -11,13 +11,11 @@ export default function QuizDetails() {
       {/* FIX THIS SPACING */}
       <div className="d-flex justify-content-between align-items-center">
         <Button className="btn-secondary">
-          <Link to={`Viewer/${isPreview}`}>
-            Preview
-          </Link>
+          <Link to={`Viewer/${isPreview}`}>Preview</Link>
         </Button>
         <Button className="btn-secondary">
           <FaPencil className=" me-3" />
-          Edit
+          <Link to={`Editor`}>Edit</Link>
         </Button>
       </div>
       <hr />
