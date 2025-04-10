@@ -1,35 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Row, Col, Card, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import { useSelector } from "react-redux";
 
 export default function Dashboard({
   courses,
-  allCourses,
   course,
   setCourse,
   addNewCourse,
   deleteCourse,
   updateCourse,
-  addNewEnrollment,
-  removeOldEnrollment,
+  enrolling,
+  setEnrolling,
+  updateEnrollment,
 }: {
   courses: any[];
-  allCourses: any[];
   course: any;
   setCourse: (course: any) => void;
   addNewCourse: () => void;
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
-  addNewEnrollment: (course: any) => void;
-  removeOldEnrollment: (course: any) => void;
+  enrolling: boolean;
+  setEnrolling: (enrolling: boolean) => void;
+  updateEnrollment: (courseId: string, enrolled: boolean) => void;
 }) {
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser && currentUser.role === "FACULTY";
-  const [showCourses, setShowCourses] = useState(false);
-  const coursesToDisplay = showCourses ? allCourses : courses;
+
+  const coursesToDisplay = courses;
 
   const handleUpdateCourse = () => {
     updateCourse();
@@ -44,7 +43,7 @@ export default function Dashboard({
 
   const handleAddNewCourse = (course: any) => {
     addNewCourse();
-    addNewEnrollment(course);
+    updateEnrollment(course, true);
   };
 
   const handleGoToCourse = (courseId: string) => {
@@ -57,14 +56,6 @@ export default function Dashboard({
 
   const isEnrolled = (courseId: string) => {
     return courses.some((course) => course._id === courseId);
-  };
-
-  const handleAddEnrollment = (course: any) => {
-    addNewEnrollment(course);
-  };
-
-  const handleRemoveEnrollment = (course: any) => {
-    removeOldEnrollment(course);
   };
 
   return (
@@ -113,13 +104,12 @@ export default function Dashboard({
         <h2 id="wd-dashboard-published">
           Published Courses ({coursesToDisplay.length})
         </h2>
-
-        <Button
-          className="ms-auto"
-          onClick={() => setShowCourses(!showCourses)}
+        <button
+          onClick={() => setEnrolling(!enrolling)}
+          className="float-end btn btn-primary"
         >
-          Enrollments
-        </Button>
+          {enrolling ? "My Courses" : "All Courses"}
+        </button>
       </div>
 
       <hr />
@@ -130,6 +120,7 @@ export default function Dashboard({
               _id: string;
               image: any;
               name: string;
+              enrolled: boolean;
               description: string | undefined;
             }) => (
               <Col className="wd-dashboard-course" style={{ width: "300px" }}>
@@ -148,6 +139,19 @@ export default function Dashboard({
 
                   <Card.Body>
                     <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                      {enrolling && (
+                        <button
+                          onClick={(event) => {
+                            event.preventDefault();
+                            updateEnrollment(course._id, !course.enrolled);
+                          }}
+                          className={`btn ${
+                            course.enrolled ? "btn-danger" : "btn-success"
+                          } float-end`}
+                        >
+                          {course.enrolled ? "Unenroll" : "Enroll"}
+                        </button>
+                      )}
                       {course.name}
                     </Card.Title>
                     <Card.Text
@@ -187,27 +191,6 @@ export default function Dashboard({
                         </Button>
                       )}
                     </div>
-
-                    {showCourses && (
-                      <div className="d-flex pt-2">
-                        {!isEnrolled(course._id) && (
-                          <Button
-                            onClick={() => handleAddEnrollment(course)}
-                            className="btn-success"
-                          >
-                            Enroll
-                          </Button>
-                        )}
-                        {isEnrolled(course._id) && (
-                          <Button
-                            onClick={() => handleRemoveEnrollment(course)}
-                            className="btn-danger"
-                          >
-                            Unenroll
-                          </Button>
-                        )}
-                      </div>
-                    )}
                   </Card.Body>
                 </Card>
               </Col>
