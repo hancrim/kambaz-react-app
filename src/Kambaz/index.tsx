@@ -38,11 +38,16 @@ export default function Kambaz() {
   const fetchCourses = async () => {
     try {
       const allCourses = await courseClient.fetchAllCourses();
+      console.log(allCourses);
       const enrolledCourses = await userClient.findCoursesForUser(
         currentUser._id
       );
+      console.log(enrolledCourses);
       const courses = allCourses.map((course: any) => {
-        if (enrolledCourses.find((c: any) => c._id === course._id)) {
+        if (
+          enrolledCourses &&
+          enrolledCourses.find((c: any) => c._id === course._id)
+        ) {
           return { ...course, enrolled: true };
         } else {
           return course;
@@ -64,7 +69,8 @@ export default function Kambaz() {
   const addNewCourse = async () => {
     try {
       const newCourse = await courseClient.createCourse(course);
-      dispatch(addCourse(newCourse));
+      console.log("Adding new course: ", newCourse);
+      // dispatch(addCourse(newCourse));
       setCourses([...courses, newCourse]);
     } catch (error) {
       console.error("Course Creation failed:", error);

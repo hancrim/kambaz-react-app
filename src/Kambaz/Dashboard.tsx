@@ -33,7 +33,7 @@ export default function Dashboard({
   const handleUpdateCourse = () => {
     updateCourse();
     setCourse({
-      _id: "new",
+      _id: "",
       name: "New course",
       number: "123",
       description: "New description",
@@ -106,7 +106,7 @@ export default function Dashboard({
         </h2>
         <button
           onClick={() => setEnrolling(!enrolling)}
-          className="float-end btn btn-primary"
+          className="ms-2 float-end btn btn-primary"
         >
           {enrolling ? "My Courses" : "All Courses"}
         </button>
@@ -122,79 +122,83 @@ export default function Dashboard({
               name: string;
               enrolled: boolean;
               description: string | undefined;
-            }) => (
-              <Col className="wd-dashboard-course" style={{ width: "300px" }}>
-                <Card>
-                  <Link
-                    to={`/Kambaz/Courses/${course._id}/Home`}
-                    className="wd-dashboard-course-link text-decoration-none text-dark"
-                  >
-                    <Card.Img
-                      variant="top"
-                      src={`/images/${course.image}`}
-                      width="100%"
-                      height={160}
-                    />
-                  </Link>
-
-                  <Card.Body>
-                    <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
-                      {enrolling && (
-                        <button
-                          onClick={(event) => {
-                            event.preventDefault();
-                            updateEnrollment(course._id, !course.enrolled);
-                          }}
-                          className={`btn ${
-                            course.enrolled ? "btn-danger" : "btn-success"
-                          } float-end`}
-                        >
-                          {course.enrolled ? "Unenroll" : "Enroll"}
-                        </button>
-                      )}
-                      {course.name}
-                    </Card.Title>
-                    <Card.Text
-                      className="wd-dashboard-course-description overflow-hidden"
-                      style={{ height: "100px" }}
+            }) =>
+              course && (
+                <Col className="wd-dashboard-course" style={{ width: "300px" }}>
+                  <Card>
+                    <Link
+                      to={`/Kambaz/Courses/${course._id}/Home`}
+                      className="wd-dashboard-course-link text-decoration-none text-dark"
                     >
-                      {course.description}{" "}
-                    </Card.Text>
-                    <div className="d-flex">
-                      <Button
-                        onClick={() => handleGoToCourse(course._id)}
-                        variant="primary"
+                      <Card.Img
+                        variant="top"
+                        src={`/images/${course.image}`}
+                        width="100%"
+                        height={160}
+                      />
+                    </Link>
+
+                    <Card.Body>
+                      <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                        {course.name}
+                      </Card.Title>
+                      <Card.Text
+                        className="wd-dashboard-course-description overflow-hidden"
+                        style={{ height: "100px" }}
                       >
-                        Go
-                      </Button>
-                      {isFaculty && (
+                        {course.description}{" "}
+                      </Card.Text>
+                      <div className="d-flex">
                         <Button
-                          onClick={() => {
-                            deleteCourse(course._id);
-                          }}
-                          className="btn btn-danger ms-2 float-end"
-                          id="wd-delete-course-click"
+                          onClick={() => handleGoToCourse(course._id)}
+                          variant="primary"
                         >
-                          Delete
+                          Go
                         </Button>
+
+                        {isFaculty && (
+                          <Button
+                            onClick={() => {
+                              deleteCourse(course._id);
+                            }}
+                            className="btn btn-danger ms-2 float-end"
+                            id="wd-delete-course-click"
+                          >
+                            Delete
+                          </Button>
+                        )}
+                        {isFaculty && (
+                          <Button
+                            id="wd-edit-course-click"
+                            onClick={() => {
+                              updateCourse();
+                              setCourse(course);
+                            }}
+                            className="btn btn-warning ms-2 float-end"
+                          >
+                            Edit
+                          </Button>
+                        )}
+                      </div>
+                      {enrolling && (
+                        <div className="d-flex pt-2">
+                          <button
+                            onClick={(event) => {
+                              event.preventDefault();
+                              updateEnrollment(course._id, !course.enrolled);
+                            }}
+                            className={`btn ${
+                              course.enrolled ? "btn-danger" : "btn-success"
+                            } float-end`}
+                          >
+                            {course.enrolled ? "Unenroll" : "Enroll"}
+                          </button>
+                        </div>
                       )}
-                      {isFaculty && (
-                        <Button
-                          id="wd-edit-course-click"
-                          onClick={() => {
-                            updateCourse();
-                            setCourse(course);
-                          }}
-                          className="btn btn-warning ms-2 float-end"
-                        >
-                          Edit
-                        </Button>
-                      )}
-                    </div>
-                  </Card.Body>
-                </Card>
-              </Col>
-            )
+                    </Card.Body>
+                  </Card>
+                </Col>
+              )
           )}
         </Row>
       </div>

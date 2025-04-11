@@ -15,6 +15,7 @@ export const createCourse = async (course: any) => {
 };
 
 export const deleteCourse = async (id: string) => {
+  console.log("Deleting course with id: ", id);
   const { data } = await axiosWithCredentials.delete(`${COURSES_API}/${id}`);
   return data;
 };
