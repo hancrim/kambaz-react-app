@@ -30,10 +30,10 @@ export default function Modules() {
   useEffect(() => {
     fetchModules();
   }, [cid]);
-  const saveModule = async (module: any) => {
-    await modulesClient.updateModule(module);
-    dispatch(updateModule(module));
-  };
+  // const saveModule = async (module: any) => {
+  //   await modulesClient.updateModule(module);
+  //   dispatch(updateModule(module));
+  // };
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser && currentUser.role === "FACULTY";
