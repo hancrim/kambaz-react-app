@@ -5,16 +5,14 @@ import KambazNavigation from "./Navigation";
 import Courses from "./Courses";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import Session from "./Account/Session";
-import { addCourse } from "./Courses/reducer";
 import * as courseClient from "./Courses/client";
 import * as userClient from "./Account/client";
 import "./styles.css";
 
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
 export default function Kambaz() {
-  const dispatch = useDispatch();
   const [courses, setCourses] = useState<any[]>([]);
   const [course, setCourse] = useState<any>({
     _id: "1234",

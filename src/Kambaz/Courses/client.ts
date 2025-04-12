@@ -57,3 +57,11 @@ export const createAssignmentForCourse = async (
   console.log("HERE HI ");
   return response.data;
 };
+
+export const findUsersForCourse = async (courseId: string) => {
+  console.log("Finding users for course: ", courseId);
+  const response = await axiosWithCredentials.get(
+    `${COURSES_API}/${courseId}/users`
+  );
+  return response.data;
+};

@@ -9,6 +9,7 @@ import PeopleTable from "./People/Table";
 import { addAssignment } from "./Assignments/reducer";
 import * as coursesClient from "./client";
 import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
 //import Quizzes from "./Quizzes";
 //import QuizDetails from "./Quizzes/QuizDetails";
 
@@ -18,6 +19,18 @@ export default function Courses({ courses }: { courses: any[] }) {
   const course = courses.find(
     (course: { _id: string | undefined }) => course._id === cid
   );
+  const [users, setUsers] = useState<any[]>([]);
+
+  const fetchUsers = async () => {
+    const users = await coursesClient.findUsersForCourse(cid as string);
+    console.log(users);
+    setUsers(users);
+    // dispatch(setEnrollments(users));
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [cid]);
 
   const dispatch = useDispatch();
   const createAssignmentForCourse = async (newAssignment: any) => {
@@ -55,7 +68,7 @@ export default function Courses({ courses }: { courses: any[] }) {
             />
             {/* <Route path="Quizzes" element={<Quizzes />} /> */}
             {/* <Route path="Quizzes/:qid" element={<QuizDetails />} /> */}
-            <Route path="People" element={<PeopleTable />} />
+            <Route path="People" element={<PeopleTable users={users} />} />
           </Routes>
         </div>
       </div>

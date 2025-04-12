@@ -30,10 +30,20 @@ export default function Modules() {
   useEffect(() => {
     fetchModules();
   }, [cid]);
+  const saveModule = async (module: any) => {
+    await modulesClient.updateModule(module);
+    dispatch(updateModule(module));
+  };
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser && currentUser.role === "FACULTY";
 
+  // const createModuleForCourse = async () => {
+  //   if (!cid) return;
+  //   const newModule = { name: moduleName, course: cid };
+  //   const module = await coursesClient.createModuleForCourse(cid, newModule);
+  //   dispatch(addModule(module));
+  // };
   const addModuleHandler = async () => {
     const newModule = await coursesClient.createModuleForCourse(cid!, {
       name: moduleName,
