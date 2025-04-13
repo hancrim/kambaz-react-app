@@ -15,6 +15,7 @@ export default function QuizEditor() {
   const quizzes = useSelector((state: any) => state.quizReducer.quizzes);
   const currentQuiz = quizzes.find((quiz: any) => quiz._id === qid);
   const isPublished = currentQuiz.isPublished;
+
   const [activeTab, setActiveTab] = useState("details");
 
   return (
