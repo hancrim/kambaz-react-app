@@ -11,8 +11,14 @@ export default function QuizViewer() {
   const quizzes = useSelector((state: any) => state.quizReducer.quizzes);
   const currentQuiz = quizzes.find((quiz: any) => quiz._id === qid);
 
+  // keeps track of current question
+  // in one-at-a-time display mode
+  const [currentQuestion, setCurrentQuestion] = useState(1); 
+  const [startDate, setStartDate] = useState<string>("");
+
+  // make date format pretty
   function formatDate(date: Date): string {
-    const month = date.toLocaleString("en-US", { month: "short" }); // e.g., "Nov"
+    const month = date.toLocaleString("en-US", { month: "short" });
     const day = date.getDate();
     const time = date.toLocaleString("en-US", {
       hour: "numeric",
@@ -32,7 +38,6 @@ export default function QuizViewer() {
     return `${month} ${day}${suffix} at ${time}`;
   }
 
-  const [startDate, setStartDate] = useState<string>("");
 
   const quiz = currentQuiz || {
     _id: "new",
@@ -40,7 +45,7 @@ export default function QuizViewer() {
     course: cid,
     points: 0,
     description: "Example description",
-    isPubslished: false,
+    isPublished: false,
     due_date: "2023-10-01T00:00:00Z",
     due_date_text: "blah",
     avail_date: "2023-09-01T00:00:00Z",
@@ -60,10 +65,9 @@ export default function QuizViewer() {
     show_correct_date: "2023-10-01T00:00:00Z",
     questions: [],
   };
-
   const isOneQuestionAtATime = quiz.one_question_at_time === "Yes";
+  const [chosenAnswers, setChosenAnswers] = useState(new Array(quiz.questions?.length).fill(""));
 
-  const [currentQuestion, setCurrentQuestion] = useState(1);
 
   useEffect(() => {
     const now = new Date();
@@ -93,11 +97,14 @@ export default function QuizViewer() {
       <hr />
       {isOneQuestionAtATime && (
         <QuestionBox
-          currentQuestion={currentQuestion}
+          questionNum={currentQuestion}
           question={{
             body: quiz.questions[currentQuestion - 1].question_text,
-            answers: quiz.questions[currentQuestion - 1].question_answer,
+            type: quiz.questions[currentQuestion - 1].question_type,
+            answers: quiz.questions[currentQuestion - 1].answers,
           }}
+          chosenAnswers={chosenAnswers}
+          setChosenAnswers={setChosenAnswers}
         />
       )}
       {!isOneQuestionAtATime && (
@@ -105,18 +112,21 @@ export default function QuizViewer() {
           {quiz.questions.map((q: any, index: any) => (
             <ListGroup.Item key={index} className="mb-3 border-0">
               <QuestionBox
-                currentQuestion={index + 1}
+                questionNum={index + 1}
                 question={{
                   body: q.question_text,
-                  answers: q.question_answer,
+                  type: q.question_type,
+                  answers: q.answers,
                 }}
+                chosenAnswers={chosenAnswers}
+                setChosenAnswers={setChosenAnswers}
               />
             </ListGroup.Item>
           ))}
         </ListGroup>
       )}
       <br />
-      {/* use this to generate teh next and previous buttons */}
+      {/* using this to create the next and previous buttons */}
       {isOneQuestionAtATime && (
         <div className="w-100 p-3 d-flex justify-content-between">
           {currentQuestion > 1 ? (
@@ -143,7 +153,7 @@ export default function QuizViewer() {
       <br />
       <br />
       <div className="w-100 p-3 text-end border border-black">
-        <Button variant="light" className="border border-black">
+        <Button variant="light" className="border border-black" onClick={() => {console.log(JSON.stringify(chosenAnswers))}}>
           {isPreview && (
             <Link
               to="../.."

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
@@ -42,21 +43,15 @@ export const createAssignmentForCourse = async (
   return response.data;
 };
 
-export const findQuizzesForCourse = async (
-  // courseId: string
-) => {
-  // const response = await axios.get(`${COURSES_API}/${courseId}/quizzes`);
-  // return response.data;
-  // TODO add this
+export const findQuizzesForCourse = async (courseId: string) => {
+  const response = await axios.get(`${COURSES_API}/${courseId}/quizzes`);
+  return response.data;
 };
 
-export const createQuizForCourse = async (
-  // courseId: string,
-) => {
-  // const response = await axios.post(
-  //   `${COURSES_API}/${courseId}/quizzes`,
-  //   quiz
-  // );
-  // return response.data;
-  // TODO add this
-}
+export const createQuizForCourse = async (courseId: string, quiz: any) => {
+  const response = await axios.post(
+    `${COURSES_API}/${courseId}/quizzes`,
+    quiz
+  );
+  return response.data;
+};

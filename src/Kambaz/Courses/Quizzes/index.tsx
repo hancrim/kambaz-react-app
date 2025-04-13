@@ -3,12 +3,12 @@ import { ListGroup } from "react-bootstrap";
 import { GoTriangleDown } from "react-icons/go";
 import QuizControls from "./QuizControls";
 import { PiNotePencilDuotone } from "react-icons/pi";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import QuizControlButtons from "./QuizControlButtons";
 import { Link, useParams } from "react-router-dom";
-// import { quizzes } from "../../Database/quizzes.json";
-// import { setQuizzes } from "./reducer";
+import { setQuizzes } from "./reducer";
 import { useEffect } from "react";
+import * as coursesClient from "../client";
 
 export default function Quizzes() {
   const { cid } = useParams();
@@ -16,20 +16,19 @@ export default function Quizzes() {
   const { quizzes } = useSelector(
     (state: any) => state.quizReducer
   );
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const fetchQuizzes = async () => {
-    // const quizzes = await coursesClient.findQuizzesForCourse(
-    //   cid as string
-    // ); 
-    // TODO update this once database is ready
-    // dispatch(setQuizzes(quizzes));
+    const quizzes = await coursesClient.findQuizzesForCourse(
+      cid as string
+    ); 
+    dispatch(setQuizzes(quizzes));
   };
   const isFaculty = currentUser && currentUser.role === "FACULTY";
   const handleQuizClick = (quizId: string) => {
     if (isFaculty) {
       return `/Kambaz/Courses/${cid}/Quizzes/${quizId}`;
     } else {
-      // SHOULD RETURN QUIZ FOR THE STUDENT -- CHANGE IN FUTURE
+      // TODO SHOULD RETURN QUIZ FOR THE STUDENT -- CHANGE IN FUTURE
       return `/Kambaz/Courses/${cid}/Quizzes`;
     }
   };
