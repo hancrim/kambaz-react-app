@@ -2,12 +2,15 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, ListGroup } from "react-bootstrap";
 import { FaCircleExclamation } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import QuestionBox from "./QuizQuestion";
+import * as accountClient from "../../Account/client";
+import { addQuizAnswer } from "./reducer";
 
 export default function QuizViewer() {
   const { cid, qid, isPreview } = useParams();
+  const dispatch = useDispatch();
   const quizzes = useSelector((state: any) => state.quizReducer.quizzes);
   const currentQuiz = quizzes.find((quiz: any) => quiz._id === qid);
 
@@ -39,6 +42,7 @@ export default function QuizViewer() {
   }
 
 
+
   const quiz = currentQuiz || {
     _id: "new",
     title: "Example Quiz",
@@ -68,6 +72,18 @@ export default function QuizViewer() {
   const isOneQuestionAtATime = quiz.one_question_at_time === "Yes";
   const [chosenAnswers, setChosenAnswers] = useState(new Array(quiz.questions?.length).fill(""));
 
+  const submitQuiz = async () => {
+    if (!qid) return;
+
+    const answered = chosenAnswers.map((ans: any, index: number) => {
+      return {
+        question_id: quiz.questions[index]._id,
+        chosenAnswer: ans,
+      }
+    });
+    const answer = await accountClient.createAnswerForQuiz(qid, answered);
+    dispatch(addQuizAnswer(answer));
+  }
 
   useEffect(() => {
     const now = new Date();
@@ -153,7 +169,7 @@ export default function QuizViewer() {
       <br />
       <br />
       <div className="w-100 p-3 text-end border border-black">
-        <Button variant="light" className="border border-black" onClick={() => {console.log(JSON.stringify(chosenAnswers))}}>
+        <Button variant="light" className="border border-black" onClick={() => {submitQuiz()}}>
           {isPreview && (
             <Link
               to="../.."
