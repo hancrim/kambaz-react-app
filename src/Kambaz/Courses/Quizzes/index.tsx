@@ -13,14 +13,10 @@ import * as coursesClient from "../client";
 export default function Quizzes() {
   const { cid } = useParams();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { quizzes } = useSelector(
-    (state: any) => state.quizReducer
-  );
+  const { quizzes } = useSelector((state: any) => state.quizReducer);
   const dispatch = useDispatch();
   const fetchQuizzes = async () => {
-    const quizzes = await coursesClient.findQuizzesForCourse(
-      cid as string
-    ); 
+    const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
     dispatch(setQuizzes(quizzes));
   };
   const isFaculty = currentUser && currentUser.role === "FACULTY";
@@ -33,13 +29,20 @@ export default function Quizzes() {
     }
   };
 
-    useEffect(() => {
-      fetchQuizzes();
-    }, []);
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
+  const createQuizForCourse = async () => {
+    if (!cid) return;
+    const newQuiz = { title: "Temp Quiz Name", course: cid };
+    //const quiz =
+    await coursesClient.createQuizForCourse(cid, newQuiz);
+    //dispatch(addquiz(quiz)); -- TODO ADD THIS?
+  };
 
   return (
     <div>
-      <QuizControls />
+      <QuizControls addQuiz={createQuizForCourse} />
       <br />
       <ListGroup>
         <ListGroup.Item className="wd-quiz p-0 mb-5 fs-5 border-gray">

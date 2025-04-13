@@ -4,20 +4,21 @@ import { Button, FormControl, InputGroup } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { IoEllipsisVertical } from "react-icons/io5";
+import { useParams } from "react-router-dom";
 // import {
 //   useNavigate,
 //   useParams,
 // } from "react-router-dom";
 
-export default function QuizControls() {
+export default function QuizControls({ addQuiz }: { addQuiz: () => void }) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser && currentUser.role === "FACULTY";
   //const navigate = useNavigate();
-  //const { cid } = useParams();
-  const handleAddQuiz = () => {
-    console.log("Add Quiz button clicked");
-    // navigate(`/Kambaz/Courses/${cid}/Quizzes/new`);
-  };
+  const { cid } = useParams();
+  // const handleAddQuiz = () => {
+  //   console.log("Add Quiz button clicked");
+  //   // navigate(`/Kambaz/Courses/${cid}/Quizzes/new`);
+  // };
 
   return (
     <div id="wd-quiz-controls">
@@ -50,7 +51,7 @@ export default function QuizControls() {
               size="lg"
               className="me-1 in-line-block text-nowrap"
               id="wd-add-module-btn"
-              onClick={handleAddQuiz}
+              onClick={addQuiz}
             >
               <FaPlus
                 className="position-relative me-2"
