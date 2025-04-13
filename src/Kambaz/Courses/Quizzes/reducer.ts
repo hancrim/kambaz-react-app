@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from "@reduxjs/toolkit";
-import { quizzes } from "../../Database";
 const initialState = {
-  quizzes: quizzes, //TODO start this as empty
+  quizzes: [], //TODO start this as empty
+  quizAnswers: [],
 };
 const quizzesSlice = createSlice({
   name: "quizzes",
@@ -16,27 +16,28 @@ const quizzesSlice = createSlice({
       const newQuiz: any = {
         _id: "new",
         title: assignment.title,
-        course: assignment.course,
-        points: assignment.points,
         description: assignment.description,
-        isPubslished: assignment.isPublished,
-        due_date: assignment.due_date,
-        due_date_text: new Date(assignment.due_date).toDateString(),
-        avail_date: assignment.avail_date,
-        avail_date_text: new Date(assignment.avail_date).toDateString(),
-        available_until: assignment.available_until,
-        lock_questions: assignment.lock_questions,
-        webcam_required: assignment.webcam_required,
-        one_question_at_time: assignment.one_question_at_time,
-        access_code: assignment.access_code,
-        num_attempts: assignment.num_attempts,
-        multiple_attempts: assignment.multiple_attempts,
-        time_limit: assignment.time_limit,
-        shuffle_questions: assignment.shuffle_questions,
-        assignment_group: assignment.assignment_group,
+        instructions: assignment.instructions,
+        course: assignment.course,
         quiz_type: assignment.quiz_type,
-        show_correct_bool: assignment.show_correct_bool,
-        show_correct_date: assignment.show_correct_date,
+        assignment_group: assignment.assignment_group,
+        shuffle_answers: assignment.shuffle_answers,
+        has_time_limit: assignment.has_time_limit,
+        time_limit: assignment.time_limit,
+        allow_multiple_attempts: assignment.allow_multiple_attempts,
+        num_attempts: assignment.num_attempts,
+        show_correct_answers: assignment.show_correct_answers,
+        show_correct_answers_date: assignment.show_correct_answers_date,
+        access_code: assignment.access_code,
+        one_question_at_time: assignment.one_question_at_time,
+        webcam_required: assignment.webcam_required,
+        lock_questions_after_answering:
+          assignment.lock_questions_after_answering,
+        is_published: assignment.is_published,
+        due_date: assignment.due_date,
+        avail_date: assignment.avail_date,
+        until_date: assignment.until_date,
+        questions: assignment.questions,
       };
       state.quizzes = [...state.quizzes, newQuiz] as any;
     },
@@ -48,8 +49,42 @@ const quizzesSlice = createSlice({
         q._id === quiz._id ? { ...q, ...quiz } : q
       ) as any;
     },
+
+    setQuizAnswers: (state, { payload: quizAnswers }) => {
+      state.quizAnswers = quizAnswers;
+    },
+
+    addQuizAnswer: (state, { payload: quizAnswer }) => {
+      const newQuizAnswer: any = {
+        _id: quizAnswer._id,
+        quiz: quizAnswer.quiz,
+        user: quizAnswer.user,
+        answered: quizAnswer.answered,
+      };
+      state.quizAnswers = [...state.quizAnswers, newQuizAnswer] as any;
+    },
+
+    deleteQuizAnswer: (state, { payload: quizAnswerId }) => {
+      state.quizAnswers = state.quizAnswers.filter(
+        (qa: any) => qa._id !== quizAnswerId
+      );
+    },
+
+    updateQuizAnswer: (state, { payload: quizAnswer }) => {
+      state.quizAnswers = state.quizAnswers.map((qa: any) =>
+        qa._id === quizAnswer._id ? { ...qa, ...quizAnswer } : qa
+      ) as any;
+    },
   },
 });
-export const { addQuiz, deleteQuiz, updateQuiz, setQuizzes } =
-  quizzesSlice.actions;
+export const {
+  addQuiz,
+  deleteQuiz,
+  updateQuiz,
+  setQuizzes,
+  addQuizAnswer,
+  deleteQuizAnswer,
+  updateQuizAnswer,
+  setQuizAnswers,
+} = quizzesSlice.actions;
 export default quizzesSlice.reducer;
