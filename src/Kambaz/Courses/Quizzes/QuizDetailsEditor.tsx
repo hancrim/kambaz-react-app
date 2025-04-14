@@ -84,6 +84,9 @@ export default function QuizDetailsEditor() {
       0
     );
   };
+  function onChange(e: any) {
+    setValue(e.target.value);
+  }
 
   return (
     <div
