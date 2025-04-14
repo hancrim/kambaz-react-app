@@ -48,6 +48,12 @@ export const findQuizzesForCourse = async (courseId: string) => {
   return response.data;
 };
 
+
+export const findQuizById = async (quizId: string) => {
+  const response = await axios.get(`${COURSES_API}/quizzes/${quizId}`);
+  return response.data;
+}
+
 export const findQuizzesByPartialName = async (
   courseId: string,
   searchTerm: string
@@ -65,6 +71,7 @@ export const findQuizzesByPartialName = async (
     return [];
   }
 };
+
 
 export const createQuizForCourse = async (courseId: string, quiz: any) => {
   const response = await axios.post(`${COURSES_API}/${courseId}/quizzes`, quiz);
