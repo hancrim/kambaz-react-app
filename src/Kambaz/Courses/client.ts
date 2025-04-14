@@ -48,15 +48,32 @@ export const findQuizzesForCourse = async (courseId: string) => {
   return response.data;
 };
 
+
 export const findQuizById = async (quizId: string) => {
   const response = await axios.get(`${COURSES_API}/quizzes/${quizId}`);
   return response.data;
 }
 
+export const findQuizzesByPartialName = async (
+  courseId: string,
+  searchTerm: string
+) => {
+  try {
+    const response = await axios.get(
+      `${COURSES_API}/${courseId}/quizzes/search`,
+      {
+        params: { name: searchTerm },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error searching quizzes:", error);
+    return [];
+  }
+};
+
+
 export const createQuizForCourse = async (courseId: string, quiz: any) => {
-  const response = await axios.post(
-    `${COURSES_API}/${courseId}/quizzes`,
-    quiz
-  );
+  const response = await axios.post(`${COURSES_API}/${courseId}/quizzes`, quiz);
   return response.data;
 };
