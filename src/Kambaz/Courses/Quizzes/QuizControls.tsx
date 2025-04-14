@@ -4,21 +4,21 @@ import { Button, FormControl, InputGroup } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { useParams } from "react-router-dom";
+
 // import {
 //   useNavigate,
 //   useParams,
 // } from "react-router-dom";
 
-export default function QuizControls({ addQuiz }: { addQuiz: () => void }) {
+export default function QuizControls({
+  addQuiz,
+  searchQuizzes,
+}: {
+  addQuiz: () => void;
+  searchQuizzes: (name: string) => void;
+}) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser && currentUser.role === "FACULTY";
-  //const navigate = useNavigate();
-  const { cid } = useParams();
-  // const handleAddQuiz = () => {
-  //   console.log("Add Quiz button clicked");
-  //   // navigate(`/Kambaz/Courses/${cid}/Quizzes/new`);
-  // };
 
   return (
     <div id="wd-quiz-controls">
@@ -36,7 +36,10 @@ export default function QuizControls({ addQuiz }: { addQuiz: () => void }) {
             <InputGroup.Text>
               <FaSearch />
             </InputGroup.Text>
-            <FormControl placeholder="Search For Quiz..." />
+            <FormControl
+              onChange={(e) => searchQuizzes(e.target.value)}
+              placeholder="Search For Quiz..."
+            />
           </InputGroup>
         </div>
 

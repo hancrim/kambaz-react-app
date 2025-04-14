@@ -5,23 +5,33 @@ import QuizControls from "./QuizControls";
 import { PiNotePencilDuotone } from "react-icons/pi";
 import { useSelector, useDispatch } from "react-redux";
 import QuizControlButtons from "./QuizControlButtons";
-import { Link, useParams } from "react-router-dom";
-import { setQuizzes } from "./reducer";
-import { useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { addQuiz, setQuizzes } from "./reducer";
+import { useEffect, useState } from "react";
 import * as coursesClient from "../client";
+import * as quizzesClient from "./client";
+import { deleteQuiz } from "./reducer";
 
 export default function Quizzes() {
   const { cid } = useParams();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { quizzes } = useSelector((state: any) => state.quizReducer);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const fetchQuizzes = async () => {
     const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
     dispatch(setQuizzes(quizzes));
   };
+
   const isFaculty = currentUser && currentUser.role === "FACULTY";
+
+  const handleEdit = (quizId: string) => {
+    navigate(handleQuizClick(quizId));
+  };
+
   const handleQuizClick = (quizId: string) => {
     if (isFaculty) {
+      console.log("HERE");
       return `/Kambaz/Courses/${cid}/Quizzes/${quizId}`;
     } else {
       // TODO SHOULD RETURN QUIZ FOR THE STUDENT -- CHANGE IN FUTURE
@@ -35,14 +45,47 @@ export default function Quizzes() {
   const createQuizForCourse = async () => {
     if (!cid) return;
     const newQuiz = { title: "Temp Quiz Name", course: cid };
-    //const quiz =
-    await coursesClient.createQuizForCourse(cid, newQuiz);
+    const quiz = await coursesClient.createQuizForCourse(cid, newQuiz);
+    dispatch(addQuiz(quiz));
     //dispatch(addquiz(quiz)); -- TODO ADD THIS?
+  };
+
+  const deleteQuizFromCourse = async (quizId: string) => {
+    await quizzesClient.deleteQuiz(quizId);
+    dispatch(deleteQuiz(quizId));
+  };
+  const toggleQuizPublishStatus = async (quiz: any) => {
+    const updatedQuiz = { ...quiz, is_published: !quiz.is_published };
+    await quizzesClient.updateQuiz(updatedQuiz);
+    dispatch(
+      setQuizzes(
+        quizzes.map((q: any) => (q._id === quiz._id ? updatedQuiz : q))
+      )
+    );
+  };
+
+  const [, setName] = useState("");
+  // New function to filter quizzes
+  const handleSearchQuizzes = async (searchTerm: string) => {
+    setName(searchTerm);
+    console.log("HERE");
+    if (searchTerm) {
+      const quizzes = await coursesClient.findQuizzesByPartialName(
+        cid as string,
+        searchTerm
+      );
+      dispatch(setQuizzes(quizzes));
+    } else {
+      fetchQuizzes();
+    }
   };
 
   return (
     <div>
-      <QuizControls addQuiz={createQuizForCourse} />
+      <QuizControls
+        addQuiz={createQuizForCourse}
+        searchQuizzes={handleSearchQuizzes}
+      />
       <br />
       <ListGroup>
         <ListGroup.Item className="wd-quiz p-0 mb-5 fs-5 border-gray">
@@ -81,30 +124,80 @@ export default function Quizzes() {
                       <b>{quiz.title}</b>
                     </Link>
                     <br />
-                    {/* TO DO MAKE ALL OF THIS DYNAMIC */}
-                    <span className="red-text">Multiple Modules</span>
-                    <span> | </span>
-                    <span className="bold-text">Not available until </span>
+
                     <span className="body-text">
-                      {""}
-                      {quiz.avail_date_text}
+                      {quiz.avail_date && quiz.until_date
+                        ? (() => {
+                            const currentDate = new Date();
+                            const availDate = new Date(quiz.avail_date);
+                            const availUntil = new Date(quiz.until_date);
+
+                            if (currentDate < availDate) {
+                              return (
+                                <>
+                                  <b>Not available until</b>{" "}
+                                  {availDate.toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  })}
+                                </>
+                              );
+                            } else if (
+                              currentDate >= availDate &&
+                              currentDate <= availUntil
+                            ) {
+                              return <b>Available</b>;
+                            } else {
+                              return <b> Closed </b>;
+                            }
+                          })()
+                        : "No availability information"}
                     </span>
                     <span> | </span>
-                    <span className="body-text">
-                      {""}
-                      {quiz.points}
-                    </span>
-                    <span className="body-text"> points </span>
-                    <br />
                     <span className="bold-text">Due </span>
                     <span className="body-text">
                       {""}
-                      {quiz.due_date_text}
+                      {quiz.due_date
+                        ? new Date(quiz.due_date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                        : "No due date"}
                     </span>
+                    <span> | </span>
+                    <span className="body-text">
+                      {""}
+                      {/* TODO ADD SUM OF POINTS HERE  */}
+                      {quiz.points}
+                    </span>
+                    <span className="body-text"> pts </span>
+                    <span> | </span>
+                    <span className="body-text">
+                      {""}
+                      {quiz.questions && quiz.questions.length}
+                    </span>
+                    <span className="body-text"> Questions </span>
+                    <br />
+
+                    {currentUser && currentUser.role === "STUDENT" && (
+                      <>
+                        <span className="body-text">
+                          <b>Score:</b>
+                          {/* {quiz.score} TODO GET LAST SCORE HERE */}
+                        </span>
+                      </>
+                    )}
                   </div>
                   {isFaculty && (
                     <div className="ms-auto">
-                      <QuizControlButtons quiz={quiz} />
+                      <QuizControlButtons
+                        quiz={quiz}
+                        editQuiz={handleEdit}
+                        deleteQuiz={deleteQuizFromCourse}
+                        publishQuiz={toggleQuizPublishStatus}
+                      />
                     </div>
                   )}
                 </div>
