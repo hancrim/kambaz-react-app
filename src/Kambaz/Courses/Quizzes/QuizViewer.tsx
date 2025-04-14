@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Alert, Button, ListGroup } from "react-bootstrap";
 import { FaCircleExclamation } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import QuestionBox from "./QuizQuestion";
 import * as accountClient from "../../Account/client";
 import { addQuizAnswer } from "./reducer";
@@ -11,12 +11,13 @@ import { addQuizAnswer } from "./reducer";
 export default function QuizViewer() {
   const { cid, qid, isPreview } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const quizzes = useSelector((state: any) => state.quizReducer.quizzes);
   const currentQuiz = quizzes.find((quiz: any) => quiz._id === qid);
 
   // keeps track of current question
   // in one-at-a-time display mode
-  const [currentQuestion, setCurrentQuestion] = useState(1); 
+  const [currentQuestion, setCurrentQuestion] = useState(1);
   const [startDate, setStartDate] = useState<string>("");
 
   // make date format pretty
@@ -41,36 +42,37 @@ export default function QuizViewer() {
     return `${month} ${day}${suffix} at ${time}`;
   }
 
-
-
   const quiz = currentQuiz || {
     _id: "new",
     title: "Example Quiz",
-    course: cid,
-    points: 0,
     description: "Example description",
-    isPublished: false,
-    due_date: "2023-10-01T00:00:00Z",
-    due_date_text: "blah",
-    avail_date: "2023-09-01T00:00:00Z",
-    avail_date_text: "blah",
-    available_until: "2023-11-01T00:00:00Z",
-    lock_questions: "No",
-    webcam_required: "No",
-    one_question_at_time: "No",
-    access_code: "xyz",
+    instructions: "Take the quiz using a calculator",
+    course: cid,
+    quiz_type: "Graded Quiz",
+    assignment_group: "Quizzes",
+    shuffle_answers: true,
+    has_time_limit: true,
+    time_limit: 20,
+    allow_multiple_attempts: true,
     num_attempts: 3,
-    multiple_attempts: "Yes",
-    time_limit: "No",
-    shuffle_questions: "Yes",
-    assignment_group: "Assignment Group",
-    quiz_type: "Graded",
-    show_correct_bool: "Yes",
-    show_correct_date: "2023-10-01T00:00:00Z",
+    show_correct_answers: true,
+    show_correct_answers_date: "2025-05-14",
+    access_code: "",
+    one_question_at_time: true,
+    webcam_required: false,
+    lock_questions_after_answering: false,
+    is_published: true,
+    due_date: "2025-05-13",
+    avail_date: "2025-05-06",
+    until_date: "2025-05-14",
     questions: [],
   };
-  const isOneQuestionAtATime = quiz.one_question_at_time === "Yes";
-  const [chosenAnswers, setChosenAnswers] = useState(new Array(quiz.questions?.length).fill(""));
+
+  const isOneQuestionAtATime = quiz.one_question_at_time;
+  
+  const [chosenAnswers, setChosenAnswers] = useState(
+    new Array(quiz.questions?.length).fill("")
+  );
 
   const submitQuiz = async () => {
     if (!qid) return;
@@ -79,11 +81,25 @@ export default function QuizViewer() {
       return {
         question_id: quiz.questions[index]._id,
         chosenAnswer: ans,
-      }
+      };
     });
+
+    if (isPreview) {
+      console.log(
+        "You cannot submit a quiz in preview mode.  However, here is the data that would be submitted:"
+      );
+      console.log(JSON.stringify(answered));
+      return;
+    }
+
     const answer = await accountClient.createAnswerForQuiz(qid, answered);
     dispatch(addQuizAnswer(answer));
-  }
+  };
+
+  const handleQuizSubmit = async () => {
+    await submitQuiz();
+    navigate("../..", { relative: "path" });
+  };
 
   useEffect(() => {
     const now = new Date();
@@ -123,7 +139,7 @@ export default function QuizViewer() {
           setChosenAnswers={setChosenAnswers}
         />
       )}
-      {!isOneQuestionAtATime && (
+      {!isOneQuestionAtATime && quiz.questions && (
         <ListGroup>
           {quiz.questions.map((q: any, index: any) => (
             <ListGroup.Item key={index} className="mb-3 border-0">
@@ -169,16 +185,14 @@ export default function QuizViewer() {
       <br />
       <br />
       <div className="w-100 p-3 text-end border border-black">
-        <Button variant="light" className="border border-black" onClick={() => {submitQuiz()}}>
-          {isPreview && (
-            <Link
-              to="../.."
-              relative="path"
-              className="text-black text-decoration-none"
-            >
-              Submit Quiz
-            </Link>
-          )}
+        <Button
+          variant="light"
+          className="border border-black"
+          onClick={() => {
+            handleQuizSubmit();
+          }}
+        >
+          Submit Quiz
         </Button>
       </div>
     </div>
