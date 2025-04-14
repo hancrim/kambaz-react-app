@@ -15,7 +15,7 @@
     "show_correct_answers": true,
     "show_correct_answers_date": "2025-05-14",
     "access_code": "",
-    "one_question_at_time": true,
+    "one_question_at_a_time": true,
     "webcam_required": false,
     "lock_questions_after_answering": false,
     "is_published": true,
