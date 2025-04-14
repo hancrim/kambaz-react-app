@@ -53,7 +53,6 @@ export const findQuizById = async (quizId: string) => {
   const response = await axios.get(`${COURSES_API}/quizzes/${quizId}`);
   return response.data;
 }
-
 export const findQuizzesByPartialName = async (
   courseId: string,
   searchTerm: string

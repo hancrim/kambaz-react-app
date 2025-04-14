@@ -8,7 +8,12 @@ import QuizControlButtons from "./QuizControlButtons";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { addQuiz, setQuizzes } from "./reducer";
 import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { addQuiz, setQuizzes } from "./reducer";
+import { useEffect, useState } from "react";
 import * as coursesClient from "../client";
+import * as quizzesClient from "./client";
+import { deleteQuiz } from "./reducer";
 import * as quizzesClient from "./client";
 import { deleteQuiz } from "./reducer";
 
@@ -18,10 +23,12 @@ export default function Quizzes() {
   const { quizzes } = useSelector((state: any) => state.quizReducer);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const navigate = useNavigate();
   const fetchQuizzes = async () => {
     const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
     dispatch(setQuizzes(quizzes));
   };
+
 
   const isFaculty = currentUser && currentUser.role === "FACULTY";
 
@@ -39,6 +46,8 @@ export default function Quizzes() {
   const createQuizForCourse = async () => {
     if (!cid) return;
     const newQuiz = { title: "Temp Quiz Name", course: cid };
+    const quiz = await coursesClient.createQuizForCourse(cid, newQuiz);
+    dispatch(addQuiz(quiz));
     const quiz = await coursesClient.createQuizForCourse(cid, newQuiz);
     dispatch(addQuiz(quiz));
     //dispatch(addquiz(quiz)); -- TODO ADD THIS?
@@ -93,6 +102,10 @@ export default function Quizzes() {
 
   return (
     <div>
+      <QuizControls
+        addQuiz={createQuizForCourse}
+        searchQuizzes={handleSearchQuizzes}
+      />
       <QuizControls
         addQuiz={createQuizForCourse}
         searchQuizzes={handleSearchQuizzes}
