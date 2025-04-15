@@ -3,6 +3,9 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import MultipleChoiceQuestionEditor from "./MultipleChoiceQuestionEditor";
 import TrueFalseQuestionEditor from "./TrueFalseQuestionEditor";
+import FillInTheBankQuestionEditor from "./FillInTheBlankQuestionEditor";
+
+// import MultipleChoiceQuestionEditor from "./MultipleChoiceQuestionEditor";
 
 export default function QuizQuestionEditor() {
   const { cid, qid } = useParams();
@@ -41,48 +44,7 @@ export default function QuizQuestionEditor() {
       <h1>Questions</h1>
       <ListGroup>
         {quiz.questions.map((q: any, index: any) => (
-          <ListGroup.Item
-            key={index}
-            className="mb-3 border border-gray rounded-1"
-          >
-            <div className="mb-2 d-flex">
-              <input
-                id="wd-question-title"
-                className="form-control me-2 w-25"
-                type="text"
-                value={q.question_title}
-              />
-
-              <select
-                id={`question-type-${index}`}
-                className="form-select w-25"
-                value={q.question_type}
-                onChange={(e) => {
-                  // Handle question type change logic here
-                  const newType = e.target.value;
-                  q.question_type = newType; // Update the question type
-                  // Optionally trigger a state update or dispatch an action
-                }}
-              >
-                <option value="Multiple Choice">Multiple Choice</option>
-                <option value="True or False">True or False</option>
-                <option value="Fill in the Blank">Fill in the Blank</option>
-              </select>
-              <div className="ms-auto d-flex justify-content-end">
-                <label
-                  htmlFor={`question-points-${index}`}
-                  className="d-flex align-items-center me-2 fw-bold"
-                >
-                  pts:
-                </label>
-                <input
-                  id={`question-points-${index}`}
-                  type="number"
-                  className="form-control w-25"
-                  value={q.question_points}
-                />
-              </div>
-            </div>
+          <ListGroup.Item key={index} className="mb-3 border-0">
             {q.question_type === "Multiple Choice" && (
               <MultipleChoiceQuestionEditor
                 questionNum={index + 1}
@@ -104,7 +66,7 @@ export default function QuizQuestionEditor() {
               />
             )}
             {q.question_type === "Fill in the Blank" && (
-              <MultipleChoiceQuestionEditor
+              <FillInTheBankQuestionEditor
                 questionNum={index + 1}
                 question={{
                   body: q.question_text,
