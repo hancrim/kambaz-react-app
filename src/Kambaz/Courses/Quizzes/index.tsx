@@ -74,6 +74,23 @@ export default function Quizzes() {
     }
   };
 
+  const calculateTotalPoints = (quiz: { questions: any[]; points: any }) => {
+    // Check if quiz has questions array
+    if (!quiz.questions || !Array.isArray(quiz.questions)) {
+      return quiz.points || 0; // Return the overall quiz points if questions not available
+    }
+
+    // Sum up all question points
+    return quiz.questions.reduce(
+      (total: any, question: { question_points: number }) => {
+        // Use question_points if available, otherwise default to 1
+        const pointValue = question.question_points || 1;
+        return total + pointValue;
+      },
+      0
+    );
+  };
+
   return (
     <div>
       <QuizControls
@@ -164,7 +181,7 @@ export default function Quizzes() {
                     <span className="body-text">
                       {""}
                       {/* TODO ADD SUM OF POINTS HERE  */}
-                      {quiz.points}
+                      {calculateTotalPoints(quiz)}
                     </span>
                     <span className="body-text"> pts </span>
                     <span> | </span>
