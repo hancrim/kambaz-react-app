@@ -55,11 +55,35 @@ export default function QuizDetailsEditor() {
     navigate(`/Kambaz/Courses/${cid}/Quizzes`);
   };
 
-  const [instructionsValue, setValue] = useState(quiz.instructions || "");
+  const [instructionsValue, setInstructionsValue] = useState(
+    quiz.instructions || ""
+  );
 
-  function onChange(e: any) {
-    setValue(e.target.value);
-  }
+  const handleInstructionsChange = (e: any) => {
+    const newInstructions = e.target.value;
+    setInstructionsValue(newInstructions);
+    setQuiz({
+      ...quiz,
+      instructions: newInstructions,
+    });
+  };
+
+  const calculateTotalPoints = (quiz: { questions: any[]; points: any }) => {
+    // Check if quiz has questions array
+    if (!quiz.questions || !Array.isArray(quiz.questions)) {
+      return quiz.points || 0; // Return the overall quiz points if questions not available
+    }
+
+    // Sum up all question points
+    return quiz.questions.reduce(
+      (total: any, question: { question_points: number }) => {
+        // Use question_points if available, otherwise default to 1
+        const pointValue = question.question_points || 1;
+        return total + pointValue;
+      },
+      0
+    );
+  };
 
   return (
     <div
@@ -84,7 +108,7 @@ export default function QuizDetailsEditor() {
           <Editor
             id="wd-quiz-instructions"
             value={instructionsValue || "Enter Instructions here"}
-            onChange={onChange}
+            onChange={handleInstructionsChange}
           />
 
           <FormGroup as={Row} className="mt-3 mb-3">
@@ -140,8 +164,6 @@ export default function QuizDetailsEditor() {
       </div>
       <div id="wd-quiz-editor-details">
         <FormGroup as={Row} className="mb-3">
-          {/* TODO - should this be active calculation of sum of all points in quiz? Prob yes so
-            implement */}
           <FormLabel
             column
             sm={2}
@@ -150,12 +172,13 @@ export default function QuizDetailsEditor() {
           >
             Points
           </FormLabel>
+          {/* CANNOT EDIT BC OF ACTIVE CALC - TODO - IS THAT FINE? */}
           <Col>
             <FormControl
               type="number"
               id="wd-points"
               placeholder="100"
-              value={quiz ? quiz.points : ""}
+              value={calculateTotalPoints(quiz) || "0"}
               onChange={(e) => setQuiz({ ...quiz, points: e.target.value })}
             />
           </Col>
