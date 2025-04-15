@@ -83,3 +83,11 @@ export const createAnswerForQuiz = async (quizId: string, answer: any) => {
   );
   return response.data;
 }
+
+// returns {_id, user, quiz, answered, score} objects
+export const findQuizAnswersForUser = async (quizId : string) => {
+  const response = await axiosWithCredentials.get(
+    `${USERS_API}/current/quizzes/${quizId}`
+  );
+  return response.data;
+}

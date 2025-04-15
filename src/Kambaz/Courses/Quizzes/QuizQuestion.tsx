@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
 import { Container, Row, Col, ListGroup } from "react-bootstrap";
 import { FaBookmark } from "react-icons/fa";
 const QuestionBox = ({
