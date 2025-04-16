@@ -9,16 +9,20 @@ import {
   FormSelect,
   Row,
 } from "react-bootstrap";
-import { useSelector } from "react-redux";
-import { Link, useParams } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router";
 import Editor from "react-simple-wysiwyg";
-
 import { useState } from "react";
+import * as quizzesClient from "./client.ts";
+import * as coursesClient from "../client.ts";
+import { updateQuiz } from "./reducer";
+
 export default function QuizDetailsEditor() {
   const { cid, qid } = useParams();
   const quizzes = useSelector((state: any) => state.quizReducer.quizzes);
   const currentQuiz = quizzes.find((quiz: any) => quiz._id === qid);
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [quiz, setQuiz] = useState<any>(
     currentQuiz || {
       _id: "new",
@@ -26,21 +30,60 @@ export default function QuizDetailsEditor() {
     }
   );
 
-  //   TODO below implement save function
-  function handleSave(): void {
-    console.log("Save button clicked");
-  }
+  const handleSavePublish = async () => {
+    const updatedQuiz = { ...quiz, is_published: !quiz.is_published };
+    if (qid !== "new") {
+      const serverQuiz = await quizzesClient.updateQuiz(updatedQuiz);
+      dispatch(updateQuiz(serverQuiz));
+    } else {
+      const serverQuiz = await coursesClient.createQuizForCourse(
+        cid as string,
+        updatedQuiz
+      );
+      dispatch(updateQuiz(serverQuiz));
+    }
+    navigate(`/Kambaz/Courses/${cid}/Quizzes`);
+  };
 
-  function handleSavePublish(): void {
-    console.log("Save & Publish button clicked");
-    // TODO - implement save and publish function
-  }
+  const handleSave = async () => {
+    if (qid !== "new") {
+      await quizzesClient.updateQuiz(quiz);
+      dispatch(updateQuiz(quiz));
+    } else {
+      await coursesClient.createQuizForCourse(cid as string, quiz);
+    }
+    navigate(`/Kambaz/Courses/${cid}/Quizzes`);
+  };
 
-  const [instructionsValue, setValue] = useState(quiz.instructions || "");
+  const [instructionsValue, setInstructionsValue] = useState(
+    quiz.instructions || ""
+  );
 
-  function onChange(e) {
-    setValue(e.target.value);
-  }
+  const handleInstructionsChange = (e: any) => {
+    const newInstructions = e.target.value;
+    setInstructionsValue(newInstructions);
+    setQuiz({
+      ...quiz,
+      instructions: newInstructions,
+    });
+  };
+
+  const calculateTotalPoints = (quiz: { questions: any[]; points: any }) => {
+    // Check if quiz has questions array
+    if (!quiz.questions || !Array.isArray(quiz.questions)) {
+      return quiz.points || 0; // Return the overall quiz points if questions not available
+    }
+
+    // Sum up all question points
+    return quiz.questions.reduce(
+      (total: any, question: { question_points: number }) => {
+        // Use question_points if available, otherwise default to 1
+        const pointValue = question.question_points || 1;
+        return total + pointValue;
+      },
+      0
+    );
+  };
 
   return (
     <div
@@ -65,7 +108,7 @@ export default function QuizDetailsEditor() {
           <Editor
             id="wd-quiz-instructions"
             value={instructionsValue || "Enter Instructions here"}
-            onChange={onChange}
+            onChange={handleInstructionsChange}
           />
 
           <FormGroup as={Row} className="mt-3 mb-3">
@@ -121,8 +164,6 @@ export default function QuizDetailsEditor() {
       </div>
       <div id="wd-quiz-editor-details">
         <FormGroup as={Row} className="mb-3">
-          {/* TODO - should this be active calculation of sum of all points in quiz? Prob yes so
-            implement */}
           <FormLabel
             column
             sm={2}
@@ -131,12 +172,13 @@ export default function QuizDetailsEditor() {
           >
             Points
           </FormLabel>
+          {/* CANNOT EDIT BC OF ACTIVE CALC - TODO - IS THAT FINE? */}
           <Col>
             <FormControl
               type="number"
               id="wd-points"
               placeholder="100"
-              value={quiz ? quiz.points : ""}
+              value={calculateTotalPoints(quiz) || "0"}
               onChange={(e) => setQuiz({ ...quiz, points: e.target.value })}
             />
           </Col>
@@ -155,11 +197,11 @@ export default function QuizDetailsEditor() {
               type="checkbox"
               id="wd-shuffle"
               label="Shuffle Answers"
-              checked={quiz ? quiz.shuffle_answers === "Yes" : false}
+              checked={quiz.shuffle_answers}
               onChange={(e) =>
                 setQuiz({
                   ...quiz,
-                  shuffle_answers: e.target.checked ? "Yes" : "No",
+                  shuffle_answers: e.target.checked,
                 })
               }
             />
@@ -169,15 +211,15 @@ export default function QuizDetailsEditor() {
                 type="checkbox"
                 id="wd-time"
                 label="Time Limit"
-                checked={quiz ? quiz.time_limit_bool === "Yes" : false}
+                checked={quiz.has_time_limit}
                 onChange={(e) =>
                   setQuiz({
                     ...quiz,
-                    time_limit_bool: e.target.checked ? "Yes" : "No",
+                    has_time_limit: e.target.checked,
                   })
                 }
               />
-              {quiz && quiz.time_limit_bool === "Yes" && (
+              {quiz && quiz.has_time_limit && (
                 <div className="d-flex">
                   <FormControl
                     type="number"
@@ -205,11 +247,11 @@ export default function QuizDetailsEditor() {
                 type="checkbox"
                 id="wd-multiple-attempts"
                 label="Multiple Attempts"
-                checked={quiz ? quiz.multiple_attempts === "Yes" : false}
+                checked={quiz.allow_multiple_attempts}
                 onChange={(e) =>
                   setQuiz({
                     ...quiz,
-                    multiple_attempts: e.target.checked ? "Yes" : "No",
+                    allow_multiple_attempts: e.target.checked,
                   })
                 }
               />
@@ -231,19 +273,19 @@ export default function QuizDetailsEditor() {
                       type="checkbox"
                       id="wd-show-correct-answers"
                       label="Show Correct Answers"
-                      checked={quiz ? quiz.show_correct_bool === "Yes" : false}
+                      checked={quiz.show_correct_answers}
                       onChange={(e) =>
                         setQuiz({
                           ...quiz,
-                          show_correct_bool: e.target.checked ? "Yes" : "No",
+                          show_correct_answers: e.target.checked,
                         })
                       }
                     />
-                    {quiz && quiz.show_correct_bool === "Yes" && (
+                    {quiz && quiz.show_correct_answers && (
                       <div className="d-flex">
                         <input
                           placeholder="May 13, 2024, 11:59PM"
-                          value={quiz ? quiz.show_correct_date : ""}
+                          value={quiz.show_correct_answers_date || ""}
                           id="wd-show-correct-date"
                           className="form-control ms-2"
                           type="date"
@@ -251,7 +293,7 @@ export default function QuizDetailsEditor() {
                           onChange={(e) =>
                             setQuiz({
                               ...quiz,
-                              show_correct_date: e.target.value,
+                              show_correct_answers_date: e.target.value,
                             })
                           }
                         />
@@ -264,11 +306,11 @@ export default function QuizDetailsEditor() {
                     type="checkbox"
                     id="wd-one-question-at-a-time"
                     label="One Question at a Time"
-                    checked={quiz ? quiz.one_question_at_time === "Yes" : false}
+                    checked={quiz.one_question_at_a_time}
                     onChange={(e) =>
                       setQuiz({
                         ...quiz,
-                        one_question_at_time: e.target.checked ? "Yes" : "No",
+                        one_question_at_a_time: e.target.checked,
                       })
                     }
                   />
@@ -278,11 +320,11 @@ export default function QuizDetailsEditor() {
                     type="checkbox"
                     id="wd-web-cam"
                     label="Webcam Required"
-                    checked={quiz ? quiz.webcam_required === "Yes" : false}
+                    checked={quiz.webcam_required}
                     onChange={(e) =>
                       setQuiz({
                         ...quiz,
-                        webcam_required: e.target.checked ? "Yes" : "No",
+                        webcam_required: e.target.checked,
                       })
                     }
                   />
@@ -292,11 +334,11 @@ export default function QuizDetailsEditor() {
                     type="checkbox"
                     id="wd-lock-questions"
                     label="Lock Questions After Answering"
-                    checked={quiz ? quiz.lock_questions === "Yes" : false}
+                    checked={quiz.lock_questions_after_answering}
                     onChange={(e) =>
                       setQuiz({
                         ...quiz,
-                        lock_questions: e.target.checked ? "Yes" : "No",
+                        lock_questions_after_answering: e.target.checked,
                       })
                     }
                   />
@@ -366,7 +408,6 @@ export default function QuizDetailsEditor() {
                     setQuiz({
                       ...quiz,
                       avail_date: e.target.value,
-                      avail_date_text: new Date(e.target.value).toDateString(),
                     })
                   }
                 />
@@ -406,7 +447,6 @@ export default function QuizDetailsEditor() {
                 setQuiz({
                   ...quiz,
                   due_date: e.target.value,
-                  due_date_text: new Date(e.target.value).toDateString(),
                 })
               }
             />
