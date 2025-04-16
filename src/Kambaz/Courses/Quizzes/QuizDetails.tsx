@@ -60,12 +60,13 @@ export default function QuizDetails() {
             >
               <div>Attempt {index + 1}</div>
               <div>{" Score: " + answer.score}</div>
+              { index === currentAnswers.length - 1 && (
               <Link
                 to={`Answers/${answer._id}`}
                 className="btn btn-outline-primary"
               >
                 View Results
-              </Link>
+              </Link>)}
             </ListGroup.Item>
           ))}
         </ListGroup>

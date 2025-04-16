@@ -98,10 +98,6 @@ export default function Quizzes() {
         addQuiz={createQuizForCourse}
         searchQuizzes={handleSearchQuizzes}
       />
-      <QuizControls
-        addQuiz={createQuizForCourse}
-        searchQuizzes={handleSearchQuizzes}
-      />
       <br />
       <ListGroup>
         <ListGroup.Item className="wd-quiz p-0 mb-5 fs-5 border-gray">
