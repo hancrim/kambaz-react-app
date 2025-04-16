@@ -30,13 +30,7 @@ export default function Quizzes() {
   };
 
   const handleQuizClick = (quizId: string) => {
-    if (isFaculty) {
-      console.log("HERE");
-      return `/Kambaz/Courses/${cid}/Quizzes/${quizId}`;
-    } else {
-      // TODO SHOULD RETURN QUIZ FOR THE STUDENT -- CHANGE IN FUTURE
-      return `/Kambaz/Courses/${cid}/Quizzes`;
-    }
+    return `/Kambaz/Courses/${cid}/Quizzes/${quizId}`;
   };
 
   useEffect(() => {

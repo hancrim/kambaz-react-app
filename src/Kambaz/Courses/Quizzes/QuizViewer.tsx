@@ -69,7 +69,7 @@ export default function QuizViewer() {
   };
 
   const isOneQuestionAtATime = quiz.one_question_at_time;
-  
+
   const [chosenAnswers, setChosenAnswers] = useState(
     new Array(quiz.questions?.length).fill("")
   );
@@ -77,22 +77,50 @@ export default function QuizViewer() {
   const submitQuiz = async () => {
     if (!qid) return;
 
+    let score = 0;
+
     const answered = chosenAnswers.map((ans: any, index: number) => {
+      const questionType = quiz.questions[index].question_type;
+      if (questionType === "Fill in the Blank") {
+        if (
+          quiz.questions[index].answers.some(
+            (answer : {answer_text : string, is_correct : boolean}) => answer.answer_text === ans
+          )
+        ) {
+          score++;
+        }
+      } else if (
+        questionType === "Multiple Choice" ||
+        questionType === "True or False"
+      ) {
+        const answerIndex = parseInt(ans, 10);
+
+        if (
+          !isNaN(answerIndex) &&
+          answerIndex >= 0 &&
+          answerIndex < quiz.questions[index].answers.length
+        ) {
+          if (quiz.questions[index].answers[answerIndex].is_correct === true) {
+            score++;
+          }
+        }
+      }
+
       return {
         question_id: quiz.questions[index]._id,
         chosenAnswer: ans,
       };
     });
 
-    if (isPreview) {
-      console.log(
-        "You cannot submit a quiz in preview mode.  However, here is the data that would be submitted:"
-      );
-      console.log(JSON.stringify(answered));
-      return;
-    }
+    const scorePercentage = Math.round((score / quiz.questions.length) * 100 * 100) / 100;
+    console.log("score that was earned is " + scorePercentage);
 
-    const answer = await accountClient.createAnswerForQuiz(qid, answered);
+    const toSend = {
+      answered: answered,
+      score: scorePercentage,
+    };
+
+    const answer = await accountClient.createAnswerForQuiz(qid, toSend);
     dispatch(addQuizAnswer(answer));
   };
 
