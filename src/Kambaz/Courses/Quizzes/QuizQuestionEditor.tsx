@@ -1,39 +1,119 @@
 import { ListGroup } from "react-bootstrap";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router";
 import MultipleChoiceQuestionEditor from "./MultipleChoiceQuestionEditor";
 import TrueFalseQuestionEditor from "./TrueFalseQuestionEditor";
+import { updateQuiz } from "./reducer";
+import * as quizzesClient from "./client";
+import * as coursesClient from "../client";
+import { useState } from "react";
 
-export default function QuizQuestionEditor() {
+export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
   const { cid, qid } = useParams();
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-  const quizzes = useSelector((state: any) => state.quizReducer.quizzes);
-  const currentQuiz = quizzes.find((quiz: any) => quiz._id === qid);
-  const quiz = currentQuiz || {
-    _id: "new",
-    title: "Example Quiz",
-    description: "Example description",
-    instructions: "Take the quiz using a calculator",
-    course: cid,
-    quiz_type: "Graded Quiz",
-    assignment_group: "Quizzes",
-    shuffle_answers: true,
-    has_time_limit: true,
-    time_limit: 20,
-    allow_multiple_attempts: true,
-    num_attempts: 3,
-    show_correct_answers: true,
-    show_correct_answers_date: "2025-05-14",
-    access_code: "",
-    one_question_at_time: true,
-    webcam_required: false,
-    lock_questions_after_answering: false,
-    is_published: true,
-    due_date: "2025-05-13",
-    avail_date: "2025-05-06",
-    until_date: "2025-05-14",
-    questions: [],
+  const dispatch = useDispatch();
+  const [quiz, setQuiz] = useState<any>(curQuiz);
+
+  const handleQuestionTypeChange = (index: number, newType: string) => {
+    const updatedQuestions = [...quiz.questions];
+    const currentQuestion = updatedQuestions[index];
+
+    // Create appropriate answers structure based on the new question type
+    let updatedAnswers;
+
+    if (newType === "Multiple Choice") {
+      // For Multiple Choice, create 4 default options with one correct
+      updatedAnswers = [
+        { answer_text: "Option 1", is_correct: true },
+        { answer_text: "Option 2", is_correct: false },
+        { answer_text: "Option 3", is_correct: false },
+        { answer_text: "Option 4", is_correct: false },
+      ];
+    } else if (newType === "True or False") {
+      // For True/False, always have True and False options
+      updatedAnswers = [
+        { answer_text: "True", is_correct: true },
+        { answer_text: "False", is_correct: false },
+      ];
+    } else if (newType === "Fill in the Blank") {
+      // For Fill in the Blank, create one default correct answer
+      updatedAnswers = [{ answer_text: "Answer", is_correct: true }];
+    }
+
+    // If current question already has answers, try to preserve them if possible
+    if (currentQuestion.answers && currentQuestion.answers.length > 0) {
+      if (newType === "True or False") {
+        // For True/False, always reset to standard format
+        updatedAnswers = [
+          { answer_text: "True", is_correct: true },
+          { answer_text: "False", is_correct: false },
+        ];
+      } else if (
+        newType === "Multiple Choice" &&
+        currentQuestion.question_type === "Fill in the Blank"
+      ) {
+        // Preserve existing answers and add more options if needed
+        updatedAnswers = [
+          ...currentQuestion.answers,
+          { answer_text: "Option 2", is_correct: false },
+          { answer_text: "Option 3", is_correct: false },
+          { answer_text: "Option 4", is_correct: false },
+        ].slice(0, 4); // Limit to 4 options
+      } else if (
+        newType === "Fill in the Blank" &&
+        currentQuestion.question_type === "Multiple Choice"
+      ) {
+        // Keep only the correct answer for Fill in the Blank
+        const correctAnswer = currentQuestion.answers.find(
+          (a: any) => a.is_correct
+        );
+        if (correctAnswer) {
+          updatedAnswers = [{ ...correctAnswer }];
+        }
+      }
+    }
+
+    updatedQuestions[index] = {
+      ...currentQuestion,
+      question_type: newType,
+      answers: updatedAnswers,
+    };
+
+    const updatedQuiz = {
+      ...quiz,
+      questions: updatedQuestions,
+    };
+
+    setQuiz(updatedQuiz);
+    handleChange(updatedQuiz);
+  };
+
+  const handleQuestionUpdate = (
+    questionIndex: number,
+    updatedQuestion: any
+  ) => {
+    const updatedQuestions = [...quiz.questions];
+    updatedQuestions[questionIndex] = {
+      ...updatedQuestions[questionIndex],
+      ...updatedQuestion,
+    };
+
+    const updatedQuiz = {
+      ...quiz,
+      questions: updatedQuestions,
+    };
+
+    setQuiz(updatedQuiz);
+    handleChange(updatedQuiz); // Send to server
+  };
+
+  const handleChange = async (curQuiz: any) => {
+    if (qid !== "new") {
+      const newQuiz = await quizzesClient.updateQuiz(curQuiz);
+      dispatch(updateQuiz(newQuiz));
+      setQuiz(newQuiz);
+    } else {
+      await coursesClient.createQuizForCourse(cid as string, quiz);
+    }
   };
 
   return (
@@ -51,18 +131,30 @@ export default function QuizQuestionEditor() {
                 className="form-control me-2 w-25"
                 type="text"
                 value={q.question_title}
+                onChange={(e) => {
+                  const updatedQuestions = [...quiz.questions];
+                  updatedQuestions[index] = {
+                    ...updatedQuestions[index],
+                    question_title: e.target.value,
+                  };
+
+                  const updatedQuiz = {
+                    ...quiz,
+                    questions: updatedQuestions,
+                  };
+
+                  setQuiz(updatedQuiz);
+                  handleChange(updatedQuiz);
+                }}
               />
 
               <select
                 id={`question-type-${index}`}
                 className="form-select w-25"
                 value={q.question_type}
-                onChange={(e) => {
-                  // Handle question type change logic here
-                  const newType = e.target.value;
-                  q.question_type = newType; // Update the question type
-                  // Optionally trigger a state update or dispatch an action
-                }}
+                onChange={(e) =>
+                  handleQuestionTypeChange(index, e.target.value)
+                }
               >
                 <option value="Multiple Choice">Multiple Choice</option>
                 <option value="True or False">True or False</option>
@@ -85,30 +177,41 @@ export default function QuizQuestionEditor() {
             </div>
             {q.question_type === "Multiple Choice" && (
               <MultipleChoiceQuestionEditor
+                currentQuiz={quiz}
+                questionIndex={index}
+                onQuestionUpdate={(updatedQuestion) =>
+                  handleQuestionUpdate(index, updatedQuestion)
+                }
                 questionNum={index + 1}
-                question={{
-                  body: q.question_text,
-                  type: q.question_type,
-                  answers: q.answers,
-                }}
+                curQuestion={q}
               />
             )}
             {q.question_type === "True or False" && (
               <TrueFalseQuestionEditor
+                currentQuiz={quiz}
+                questionIndex={index}
+                onQuestionUpdate={(updatedQuestion) =>
+                  handleQuestionUpdate(index, updatedQuestion)
+                }
                 questionNum={index + 1}
-                question={{
-                  body: q.question_text,
-                  type: q.question_type,
+                curQuestion={{
+                  question_text: q.question_text,
+                  question_type: q.question_type,
                   answers: q.answers,
                 }}
               />
             )}
             {q.question_type === "Fill in the Blank" && (
               <MultipleChoiceQuestionEditor
+                currentQuiz={quiz}
+                questionIndex={index}
+                onQuestionUpdate={(updatedQuestion) =>
+                  handleQuestionUpdate(index, updatedQuestion)
+                }
                 questionNum={index + 1}
-                question={{
-                  body: q.question_text,
-                  type: q.question_type,
+                curQuestion={{
+                  question_text: q.question_text,
+                  question_type: q.question_type,
                   answers: q.answers,
                 }}
               />

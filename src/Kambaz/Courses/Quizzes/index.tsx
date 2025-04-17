@@ -42,6 +42,7 @@ export default function Quizzes() {
     const newQuiz = { title: "Temp Quiz Name", course: cid };
     const quiz = await coursesClient.createQuizForCourse(cid, newQuiz);
     dispatch(addQuiz(quiz));
+    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}`);
     //dispatch(addquiz(quiz)); -- TODO ADD THIS?
   };
 
@@ -110,6 +111,11 @@ export default function Quizzes() {
             </span>
           </div>
           <ListGroup className="wd-quizzes rounded-0 w-100">
+            {quizzes.length == 0 && isFaculty && (
+              <div className="m-3">
+                Use the red add quiz button to create a quiz.
+              </div>
+            )}
             {quizzes.map((quiz: any) => (
               <ListGroup.Item className="wd-lesson p-3 ps-1">
                 <div

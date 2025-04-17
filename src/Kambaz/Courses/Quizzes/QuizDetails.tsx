@@ -26,30 +26,114 @@ export default function QuizDetails() {
 
     const fetchQuiz = async () => {
       const quiz = await coursesClient.findQuizById(qid as string);
-
       setQuiz(quiz);
     };
     fetchUserQuizAnswers();
     fetchQuiz();
   }, [qid]);
 
+  const showCorrectAnswersDate = new Date(quiz.show_correct_answers_date);
+  const dueDate = new Date(quiz.due_date);
+  const availDate = new Date(quiz.avail_date);
+  const untilDate = new Date(quiz.until_date);
+
   return (
     <div>
-      <b>Quiz Details</b>
+      <h2>Quiz Details</h2>
       {isFaculty && (
-        <div className="d-flex justify-content-between align-items-center">
-          <Button className="btn-secondary">
-            <Link to={`Viewer/${isFaculty ? "true" : "false"}`}>Preview</Link>
-          </Button>
-          <Button className="btn-secondary">
-            <FaPencil className=" me-3" />
-            <Link to={`Editor`}>Edit</Link>
-          </Button>
+        <div className="d-flex justify-content-center align-items-center">
+          <div className="d-flex justify-content-between">
+            <Button
+              className="btn-secondary me-2"
+              style={{ outline: "1px solid darkgray" }}
+              onClick={() => navigate(`Viewer/${isFaculty ? "true" : "false"}`)}
+            >
+              Preview
+            </Button>
+            <Button
+              className="btn-secondary"
+              style={{ outline: "1px solid darkgray" }}
+              onClick={() => navigate(`Editor`)}
+            >
+              <FaPencil className="me-3" />
+              Edit
+            </Button>
+          </div>
         </div>
       )}
       <hr />
-      <h3 className="text-center">{quiz?.title}</h3>
-      <hr/>
+      <h3 className="text-center">{quiz.title}</h3>
+      <div className="d-flex justify-content-center">
+        <div className="d-flex">
+          <div className="text-end fw-bold me-3">
+            <div>Quiz Type</div>
+            <div>Points</div>
+            <div>Assignment Group</div>
+            <div>Shuffle Answers</div>
+            <div>Time Limit</div>
+            <div>Multiple Attempts</div>
+            <div>Access Code</div>
+            <div>Show Correct Answers</div>
+            <div>One Question at a Time</div>
+            <div>Webcam Required</div>
+            <div>Lock Questions After Answering</div>
+          </div>
+          <div className="text-start">
+            <div>{quiz.quiz_type}</div>
+            <div>0{/* TODO - sum points here */}</div>
+            <div>{quiz.assignment_group}</div>
+            <div>{quiz.shuffle_answers ? "Yes" : "No"}</div>
+            <div>{quiz.has_time_limit ? quiz.time_limit : "No Time Limit"}</div>
+            <div>{quiz.allow_multiple_attempts ? quiz.num_attempts : "No"}</div>
+            <div>{quiz.access_code || "No Access Code"}</div>
+            <div>
+              {quiz.show_correct_answers
+                ? showCorrectAnswersDate.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : "No"}
+            </div>
+
+            <div>{quiz.one_question_at_time ? "Yes" : "No"}</div>
+            <div>{quiz.webcam_required ? "Yes" : "No"}</div>
+            <div>{quiz.lock_questions_after_answering ? "Yes" : "No"}</div>
+          </div>
+        </div>
+      </div>
+      <div id="wd-due-dates" className="mt-3 d=flex justify-content-center">
+        <div className="d-flex justify-content-between">
+          <div className="text-center flex-fill fw-bold">Due</div>
+          <div className="text-center flex-fill fw-bold">Available From</div>
+          <div className="text-center flex-fill fw-bold">Until</div>
+        </div>
+        <hr />
+        <div className="d-flex justify-content-between">
+          <div className="text-center flex-fill">
+            {dueDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </div>
+          <div className="text-center flex-fill">
+            {availDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </div>
+          <div className="text-center flex-fill">
+            {untilDate.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </div>
+        </div>
+      </div>
+      <hr />
       <h3>Previous Attempts</h3>
       {Array.isArray(currentAnswers) && currentAnswers.length > 0 ? (
         <ListGroup className="mt-3">
@@ -83,7 +167,11 @@ export default function QuizDetails() {
       ) : (
         <Button className="btn-danger">Maximum quiz attempts reached</Button>
       )}
-      {isFaculty && (<p>Faculy have no limit on the number of times they can attempt a quiz.</p>)}
+      {isFaculty && (
+        <p>
+          Faculy have no limit on the number of times they can attempt a quiz.
+        </p>
+      )}
     </div>
   );
 }
