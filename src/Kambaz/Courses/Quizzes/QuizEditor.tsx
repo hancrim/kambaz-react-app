@@ -14,14 +14,16 @@ export default function QuizEditor() {
   const { cid, qid } = useParams();
   const quizzes = useSelector((state: any) => state.quizReducer.quizzes);
   const currentQuiz = quizzes.find((quiz: any) => quiz._id === qid);
-  const isPublished = currentQuiz.isPublished;
+  const isPublished = (currentQuiz && currentQuiz.isPublished) || false;
 
   const [activeTab, setActiveTab] = useState("details");
 
   return (
     <div>
       <div className="d-flex justify-content-end align-items-center">
-        <div className="me-3 fs-4">Points {currentQuiz.points}</div>
+        <div className="me-3 fs-4">
+          Points {currentQuiz && currentQuiz.points}
+        </div>
 
         <div
           className="me-3 fs-5"
@@ -65,7 +67,11 @@ export default function QuizEditor() {
           Quiz Questions
         </button>
       </div>
-      {activeTab === "details" ? <QuizDetailsEditor /> : <QuizQuestionEditor />}
+      {activeTab === "details" ? (
+        <QuizDetailsEditor />
+      ) : (
+        <QuizQuestionEditor curQuiz={currentQuiz} />
+      )}
     </div>
   );
 }
