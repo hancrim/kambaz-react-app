@@ -285,7 +285,11 @@ export default function QuizDetailsEditor() {
                       <div className="d-flex">
                         <input
                           placeholder="May 13, 2024, 11:59PM"
-                          value={quiz.show_correct_answers_date || ""}
+                          value={
+                            quiz && quiz.show_correct_answers_date
+                              ? quiz.show_correct_answers_date.split("T")[0]
+                              : ""
+                          }
                           id="wd-show-correct-date"
                           className="form-control ms-2"
                           type="date"
@@ -399,7 +403,9 @@ export default function QuizDetailsEditor() {
                 </FormLabel>
                 <input
                   placeholder="May 13, 2024, 11:59PM"
-                  value={quiz ? quiz.avail_date : ""}
+                  value={
+                    quiz && quiz.avail_date ? quiz.avail_date.split("T")[0] : ""
+                  }
                   id="wd-available-from"
                   className="form-control"
                   type="date"
@@ -419,7 +425,9 @@ export default function QuizDetailsEditor() {
                 </FormLabel>
                 <input
                   placeholder="May 13, 2024, 11:59PM"
-                  value={quiz ? quiz.available_until : ""}
+                  value={
+                    quiz && quiz.until_date ? quiz.until_date.split("T")[0] : ""
+                  }
                   id="wd-available-until"
                   className="form-control"
                   type="date"
@@ -438,7 +446,7 @@ export default function QuizDetailsEditor() {
             </label>
             <input
               placeholder="May 13, 2024, 11:59PM"
-              value={quiz ? quiz.due_date : ""}
+              value={quiz && quiz.due_date ? quiz.due_date.split("T")[0] : ""}
               id="wd-due-date"
               className="form-control"
               type="date"

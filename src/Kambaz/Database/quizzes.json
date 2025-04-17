@@ -27,6 +27,7 @@
     "questions": [
       {
         "_id": "Q101-1",
+        "question_title": "Thrust Calculation",
         "question_text": "What is the thrust of a rocket with a mass flow rate of 10 kg/s and an exhaust velocity of 3000 m/s?",
         "question_type": "Multiple Choice",
         "question_points": 1,
@@ -39,6 +40,7 @@
       },
       {
         "_id": "Q101-2",
+        "question_title": "Thrust-to-Weight Ratio",
         "question_text": "Is the best thrust-to-weight ratio for a rocket 1:1?",
         "question_type": "True or False",
         "question_points": 1,
@@ -49,6 +51,7 @@
       },
       {
         "_id": "Q101-3",
+        "question_title": "Specific Impulse",
         "question_text": "What is the specific impulse of a rocket engine that produces 5000 N of thrust and consumes 0.5 kg/s of propellant?",
         "question_type": "Fill in the Blank",
         "question_points": 1,
