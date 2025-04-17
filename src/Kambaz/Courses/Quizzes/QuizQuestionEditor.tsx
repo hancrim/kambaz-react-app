@@ -1,6 +1,6 @@
-import { ListGroup } from "react-bootstrap";
+import { Button, ListGroup } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import MultipleChoiceQuestionEditor from "./MultipleChoiceQuestionEditor";
 import TrueFalseQuestionEditor from "./TrueFalseQuestionEditor";
 import { updateQuiz } from "./reducer";
@@ -172,6 +172,21 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
                   type="number"
                   className="form-control w-25"
                   value={q.question_points}
+                  onChange={(e) => {
+                    const updatedQuestions = [...quiz.questions];
+                    updatedQuestions[index] = {
+                      ...updatedQuestions[index],
+                      question_points: e.target.value,
+                    };
+
+                    const updatedQuiz = {
+                      ...quiz,
+                      questions: updatedQuestions,
+                    };
+
+                    setQuiz(updatedQuiz);
+                    handleChange(updatedQuiz);
+                  }}
                 />
               </div>
             </div>
@@ -219,6 +234,16 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
           </ListGroup.Item>
         ))}
       </ListGroup>
+
+      <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`}>
+        <Button
+          id="wd-cancel"
+          className="btn-secondary float-end me-2"
+          size="lg"
+        >
+          Cancel
+        </Button>
+      </Link>
     </div>
   );
 }

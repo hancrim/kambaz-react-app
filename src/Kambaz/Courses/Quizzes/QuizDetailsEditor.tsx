@@ -435,7 +435,7 @@ export default function QuizDetailsEditor() {
                   onChange={(e) =>
                     setQuiz({
                       ...quiz,
-                      available_until: e.target.value,
+                      until_date: e.target.value,
                     })
                   }
                 />
