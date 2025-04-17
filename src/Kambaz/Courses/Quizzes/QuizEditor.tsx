@@ -11,10 +11,10 @@ import { useState } from "react";
 import { Button } from "react-bootstrap";
 
 export default function QuizEditor() {
-  const { cid, qid } = useParams();
+  const { qid } = useParams();
   const quizzes = useSelector((state: any) => state.quizReducer.quizzes);
   const currentQuiz = quizzes.find((quiz: any) => quiz._id === qid);
-  const isPublished = (currentQuiz && currentQuiz.isPublished) || false;
+  const isPublished = (currentQuiz && currentQuiz.is_published) || false;
 
   const [activeTab, setActiveTab] = useState("details");
 
