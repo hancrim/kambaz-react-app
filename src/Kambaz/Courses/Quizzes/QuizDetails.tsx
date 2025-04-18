@@ -8,7 +8,7 @@ import * as accountClient from "../../Account/client";
 import * as coursesClient from "../client";
 
 export default function QuizDetails() {
-  const { qid } = useParams();
+  const { cid, qid } = useParams();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [currentAnswers, setCurrentAnswers] = useState([]);
@@ -171,6 +171,19 @@ export default function QuizDetails() {
           Faculy have no limit on the number of times they can attempt a quiz.
         </p>
       )}
+      <div>
+        <Link
+          to={`/Kambaz/Courses/${cid}/Quizzes`}
+          className="btn btn-secondary"
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+          }}
+        >
+          Exit
+        </Link>
+      </div>
     </div>
   );
 }
