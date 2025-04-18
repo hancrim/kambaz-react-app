@@ -9,11 +9,13 @@ import PeopleTable from "./People/Table";
 import { addAssignment } from "./Assignments/reducer";
 import * as coursesClient from "./client";
 import { useDispatch } from "react-redux";
+
 import Quizzes from "./Quizzes";
 import QuizDetails from "./Quizzes/QuizDetails";
 import QuizViewer from "./Quizzes/QuizViewer";
 import QuizEditor from "./Quizzes/QuizEditor";
 import QuizAnswerReview from "./Quizzes/QuizAnswerReview";
+
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();
@@ -71,6 +73,7 @@ export default function Courses({ courses }: { courses: any[] }) {
               path="Quizzes/:qid/Viewer/:isPreview"
               element={<QuizViewer />}
             />
+
             <Route path="People" element={<PeopleTable />} />
           </Routes>
         </div>

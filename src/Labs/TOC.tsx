@@ -57,6 +57,21 @@ export default function TOC() {
       <Nav.Item id="wd-github">
         <Nav.Link href="https://github.com/hancrim">My GitHub</Nav.Link>
       </Nav.Item>
+      <Nav.Item id="wd-github">
+        <Nav.Link href="https://github.com/hancrim/kambaz-node-server-app">
+          My Server GitHub
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item id="wd-github">
+        <Nav.Link href="https://github.com/hancrim/kambaz-react-app">
+          My App GitHub
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item id="wd-github">
+        <Nav.Link href="https://dashboard.render.com/web/srv-cvichah5pdvs738kv3s0">
+          My Render Server
+        </Nav.Link>
+      </Nav.Item>
     </Nav>
   );
 }
