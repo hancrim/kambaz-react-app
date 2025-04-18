@@ -8,7 +8,7 @@ import * as accountClient from "../../Account/client";
 import * as coursesClient from "../client";
 
 export default function QuizDetails() {
-  const { qid } = useParams();
+  const { cid, qid } = useParams();
   const navigate = useNavigate();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [currentAnswers, setCurrentAnswers] = useState([]);
@@ -162,20 +162,62 @@ export default function QuizDetails() {
         <p>No previous attempts found.</p>
       )}
       <br />
-      {quiz?.num_attempts > currentAnswers.length || isFaculty ? (
-        <Button
-          onClick={() => navigate(`Viewer/${isFaculty ? "true" : "false"}`)}
-        >
-          Begin Quiz
-        </Button>
+      {quiz.avail_date && quiz.until_date ? (
+        (() => {
+          const currentDate = new Date();
+          const availDate = new Date(quiz.avail_date);
+          const availUntil = new Date(quiz.until_date);
+
+          if (currentDate < availDate) {
+            return (
+              <Button className="btn-danger">
+                Not available until{" "}
+                {availDate.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </Button>
+            );
+          } else if (currentDate >= availUntil) {
+            return <Button className="btn-danger">Closed</Button>;
+          } else {
+            return quiz?.num_attempts > currentAnswers.length || isFaculty ? (
+              <Button
+                onClick={() =>
+                  navigate(`Viewer/${isFaculty ? "true" : "false"}`)
+                }
+              >
+                Begin Quiz
+              </Button>
+            ) : (
+              <Button className="btn-danger">
+                Maximum quiz attempts reached
+              </Button>
+            );
+          }
+        })()
       ) : (
-        <Button className="btn-danger">Maximum quiz attempts reached</Button>
+        <Button className="btn-danger">No availability information</Button>
       )}
       {isFaculty && (
         <p>
           Faculy have no limit on the number of times they can attempt a quiz.
         </p>
       )}
+      <div>
+        <Link
+          to={`/Kambaz/Courses/${cid}/Quizzes`}
+          className="btn btn-secondary"
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+          }}
+        >
+          Exit
+        </Link>
+      </div>
     </div>
   );
 }

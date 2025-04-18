@@ -52,7 +52,6 @@ export default function QuizDetailsEditor() {
     } else {
       await coursesClient.createQuizForCourse(cid as string, quiz);
     }
-    navigate(`/Kambaz/Courses/${cid}/Quizzes`);
   };
 
   const [instructionsValue, setInstructionsValue] = useState(
@@ -516,7 +515,7 @@ export default function QuizDetailsEditor() {
                   Save
                 </Button>
               </Link>
-              <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`}>
+              <Link to={`/Kambaz/Courses/${cid}/Quizzes`}>
                 <Button
                   id="wd-cancel"
                   className="btn-secondary float-end me-2"
