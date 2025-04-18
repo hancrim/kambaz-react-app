@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Alert, Button, ListGroup } from "react-bootstrap";
-import { FaCircleExclamation } from "react-icons/fa6";
+import { FaCircleExclamation, FaPencil } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import QuestionBox from "./QuizQuestion";
@@ -84,7 +84,8 @@ export default function QuizViewer() {
       if (questionType === "Fill in the Blank") {
         if (
           quiz.questions[index].answers.some(
-            (answer : {answer_text : string, is_correct : boolean}) => answer.answer_text === ans
+            (answer: { answer_text: string; is_correct: boolean }) =>
+              answer.answer_text === ans
           )
         ) {
           score++;
@@ -112,7 +113,8 @@ export default function QuizViewer() {
       };
     });
 
-    const scorePercentage = Math.round((score / quiz.questions.length) * 100 * 100) / 100;
+    const scorePercentage =
+      Math.round((score / quiz.questions.length) * 100 * 100) / 100;
     console.log("score that was earned is " + scorePercentage);
 
     const toSend = {
@@ -156,16 +158,28 @@ export default function QuizViewer() {
       <h2>Quiz Instructions</h2>
       <hr />
       {isOneQuestionAtATime && (
-        <QuestionBox
-          questionNum={currentQuestion}
-          question={{
-            body: quiz.questions[currentQuestion - 1].question_text,
-            type: quiz.questions[currentQuestion - 1].question_type,
-            answers: quiz.questions[currentQuestion - 1].answers,
-          }}
-          chosenAnswers={chosenAnswers}
-          setChosenAnswers={setChosenAnswers}
-        />
+        <div className="position-relative">
+          <QuestionBox
+            questionNum={currentQuestion}
+            question={{
+              body: quiz.questions[currentQuestion - 1].question_text,
+              type: quiz.questions[currentQuestion - 1].question_type,
+              answers: quiz.questions[currentQuestion - 1].answers,
+            }}
+            chosenAnswers={chosenAnswers}
+            setChosenAnswers={setChosenAnswers}
+          />
+          <Button
+            className="position-absolute top-0 end-0 mt-2 me-2 btn-sm"
+            variant="outline-primary"
+            onClick={() =>
+              navigate(`/Kambaz/Courses/${cid}/Quizzes/${qid}/Editor/true`)
+            }
+            title="Edit Question"
+          >
+            <FaPencil />
+          </Button>
+        </div>
       )}
       {!isOneQuestionAtATime && quiz.questions && (
         <ListGroup>
@@ -181,6 +195,20 @@ export default function QuizViewer() {
                 chosenAnswers={chosenAnswers}
                 setChosenAnswers={setChosenAnswers}
               />
+              {isPreview === "true" && (
+                <Button
+                  className="position-absolute top-0 end-0 mt-2 me-3 btn-sm"
+                  variant="outline-primary"
+                  onClick={() =>
+                    navigate(
+                      `/Kambaz/Courses/${cid}/Quizzes/${qid}/Editor/true`
+                    )
+                  }
+                  title="Edit Question"
+                >
+                  <FaPencil />
+                </Button>
+              )}
             </ListGroup.Item>
           ))}
         </ListGroup>
