@@ -72,8 +72,11 @@ export default function QuizDetails() {
             <div>Shuffle Answers</div>
             <div>Time Limit</div>
             <div>Multiple Attempts</div>
-            <div>Access Code</div>
+            { quiz.allow_multiple_attempts && 
+              <div>Number of Attempts</div>
+            }
             <div>Show Correct Answers</div>
+            <div>Access Code</div>
             <div>One Question at a Time</div>
             <div>Webcam Required</div>
             <div>Lock Questions After Answering</div>
@@ -82,10 +85,12 @@ export default function QuizDetails() {
             <div>{quiz.quiz_type}</div>
             <div>0{/* TODO - sum points here */}</div>
             <div>{quiz.assignment_group}</div>
-            <div>{quiz.shuffle_answers ? "Yes" : "No"}</div>
-            <div>{quiz.has_time_limit ? quiz.time_limit : "No Time Limit"}</div>
-            <div>{quiz.allow_multiple_attempts ? quiz.num_attempts : "No"}</div>
-            <div>{quiz.access_code || "No Access Code"}</div>
+            <div>{quiz.shuffle_answers ? "No" : "Yes"}</div>
+            <div>{quiz.has_time_limit ? quiz.time_limit : "20 Minutes"}</div>
+            <div>{quiz.allow_multiple_attempts ? "Yes" : "No"}</div>
+            { quiz.allow_multiple_attempts && 
+              <div>{quiz.num_attempts ? quiz.num_attempts : "2" }</div>
+            }
             <div>
               {quiz.show_correct_answers
                 ? showCorrectAnswersDate.toLocaleDateString("en-US", {
@@ -95,8 +100,8 @@ export default function QuizDetails() {
                   })
                 : "No"}
             </div>
-
-            <div>{quiz.one_question_at_time ? "Yes" : "No"}</div>
+            <div>{quiz.access_code || "No Access Code"}</div>
+            <div>{quiz.one_question_at_time ? "No" : "Yes"}</div>
             <div>{quiz.webcam_required ? "Yes" : "No"}</div>
             <div>{quiz.lock_questions_after_answering ? "Yes" : "No"}</div>
           </div>

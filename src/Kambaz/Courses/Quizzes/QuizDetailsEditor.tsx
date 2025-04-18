@@ -255,7 +255,31 @@ export default function QuizDetailsEditor() {
                   })
                 }
               />
+
             </div>
+            { quiz.allow_multiple_attempts && 
+              <div className=" mt-2"
+              id="wd-num-attempts">
+                <FormGroup as={Row} className="mb-3">
+                  <FormLabel
+                    column
+                    sm={2}
+                    style={{ textAlign: "right" }}
+                    htmlFor="wd-num-attempts"
+                  >
+                    Number of Attempts
+                  </FormLabel>
+                  <Col>
+                    <FormControl
+                      type="number"
+                      id="wd-num-attempts"
+                      placeholder="2"
+                      onChange={(e) => setQuiz({ ...quiz, num_attempts: e.target.value })}
+                    />
+                  </Col>
+                </FormGroup>
+              </div>
+            }
             <div className="d-flex" id="wd-answers-details">
               <FormGroup>
                 <FormLabel
