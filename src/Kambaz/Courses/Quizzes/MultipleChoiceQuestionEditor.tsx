@@ -4,43 +4,51 @@ import { FaPencil, FaTrash, FaCheck, FaPlus } from "react-icons/fa6";
 import Editor from "react-simple-wysiwyg";
 
 export default function MultipleChoiceQuestionEditor({
-  currentQuiz,
   questionNum,
   curQuestion,
-  questionIndex,
   onQuestionUpdate,
 }: {
-  currentQuiz: any;
   questionNum: any;
   curQuestion: any;
-  questionIndex: number;
   onQuestionUpdate: (updatedQuestion: any) => void;
 }) {
   const questionType = curQuestion.question_type;
   const [question, setUpdatedQuestion] = useState(curQuestion);
   const [questionValue, setQuestionValue] = useState(
-    question.question_text || ""
+    curQuestion.question_text || ""
   );
-  const [originalQuestion, setOriginalQuestion] = useState(curQuestion);
 
   // Use an array of booleans instead of an object
   const [editingAnswers, setEditingAnswers] = useState(
     // Initialize all answers to be in editing mode by default
-    Array(question.answers.length).fill(false)
+    Array(curQuestion.answers.length).fill(false)
   );
-
-  // Keep original question in sync with props
-  useEffect(() => {
-    setOriginalQuestion({ ...curQuestion });
-  }, [curQuestion]);
-
-  // Update parent component whenever question state changes
-  useEffect(() => {
-    onQuestionUpdate(question);
-  }, [question, onQuestionUpdate]);
 
   // Temporary state to hold answer text while editing
   const [tempAnswerText, setTempAnswerText] = useState("");
+
+  // Track if we need to notify parent of changes
+  const [shouldNotifyParent, setShouldNotifyParent] = useState(false);
+
+  // Update local state when parent props change (e.g., for cancel)
+  useEffect(() => {
+    // Prevent infinite loop by directly setting state without triggering notification
+    setUpdatedQuestion(curQuestion);
+    setQuestionValue(curQuestion.question_text || "");
+    // Reset editing state for answers when question changes
+    if (curQuestion.answers) {
+      setEditingAnswers(Array(curQuestion.answers.length).fill(false));
+    }
+    setShouldNotifyParent(false); // Reset notification flag
+  }, [curQuestion]);
+
+  // Only notify parent when we explicitly set the flag
+  useEffect(() => {
+    if (shouldNotifyParent) {
+      onQuestionUpdate(question);
+      setShouldNotifyParent(false); // Reset flag after notification
+    }
+  }, [shouldNotifyParent, question, onQuestionUpdate]);
 
   const handleAnswerKeyPress = (
     event: React.KeyboardEvent,
@@ -51,7 +59,7 @@ export default function MultipleChoiceQuestionEditor({
       event.preventDefault(); // Prevent form submission
 
       // Update the answer with the temporary text
-      setUpdatedQuestion({
+      const updatedQuestion = {
         ...question,
         answers: question.answers.map((a: any, i: number) => {
           if (i === answerIndex) {
@@ -59,7 +67,10 @@ export default function MultipleChoiceQuestionEditor({
           }
           return a;
         }),
-      });
+      };
+
+      setUpdatedQuestion(updatedQuestion);
+      setShouldNotifyParent(true); // Set flag to notify parent
 
       // Exit editing mode for this answer
       const newEditingAnswers = [...editingAnswers];
@@ -73,21 +84,28 @@ export default function MultipleChoiceQuestionEditor({
   };
 
   const handleCorrectAnswerChange = (answerIndex: number) => {
-    setUpdatedQuestion({
+    const updatedQuestion = {
       ...question,
       answers: question.answers.map((a: any, i: number) => ({
         ...a,
         is_correct: i === answerIndex, // Only the selected answer is true
       })),
-    });
+    };
+
+    setUpdatedQuestion(updatedQuestion);
+    setShouldNotifyParent(true); // Set flag to notify parent
   };
 
   const handleQuestionTextChange = (e: any) => {
-    setQuestionValue(e.target.value);
+    const newValue = e.target.value;
+    setQuestionValue(newValue);
+
     setUpdatedQuestion({
       ...question,
-      question_text: e.target.value,
+      question_text: newValue,
     });
+
+    setShouldNotifyParent(true); // Set flag to notify parent
   };
 
   // Toggle editing for a specific answer
@@ -109,15 +127,32 @@ export default function MultipleChoiceQuestionEditor({
     }
   };
 
-  // Reset to original state if curQuestion changes (when parent triggers cancel)
-  useEffect(() => {
-    setUpdatedQuestion(curQuestion);
-    setQuestionValue(curQuestion.question_text || "");
-    // Reset editing state for answers when question changes
-    if (curQuestion.answers) {
-      setEditingAnswers(Array(curQuestion.answers.length).fill(false));
-    }
-  }, [curQuestion]);
+  const handleDeleteAnswer = (index: number) => {
+    const updatedQuestion = {
+      ...question,
+      answers: question.answers.filter((_, i) => i !== index),
+    };
+
+    setUpdatedQuestion(updatedQuestion);
+    setShouldNotifyParent(true); // Set flag to notify parent
+  };
+
+  const handleAddAnswer = () => {
+    const updatedQuestion = {
+      ...question,
+      answers: [
+        ...question.answers,
+        {
+          answer_text: "new option",
+          is_correct:
+            questionType && questionType === "Fill in the Blank" ? true : false,
+        },
+      ],
+    };
+
+    setUpdatedQuestion(updatedQuestion);
+    setShouldNotifyParent(true); // Set flag to notify parent
+  };
 
   return (
     <div
@@ -196,14 +231,7 @@ export default function MultipleChoiceQuestionEditor({
               </Button>
               <Button
                 variant="outline-danger"
-                onClick={() =>
-                  setUpdatedQuestion({
-                    ...question,
-                    answers: question.answers.filter(
-                      (a: any, i: number) => i !== index
-                    ),
-                  })
-                }
+                onClick={() => handleDeleteAnswer(index)}
               >
                 <FaTrash />
               </Button>
@@ -215,21 +243,7 @@ export default function MultipleChoiceQuestionEditor({
         <Button
           variant="outline-danger"
           className="me-2"
-          onClick={() => {
-            setUpdatedQuestion({
-              ...question,
-              answers: [
-                ...question.answers,
-                {
-                  answer_text: "new option",
-                  is_correct:
-                    questionType && questionType === "Fill in the Blank"
-                      ? true
-                      : false,
-                },
-              ],
-            });
-          }}
+          onClick={handleAddAnswer}
         >
           <FaPlus className="me-2" />
           Add Another Answer

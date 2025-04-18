@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Row, Col, Card, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+
+import { useState } from "react";
+
 import { useSelector } from "react-redux";
 
 export default function Dashboard({
@@ -29,6 +32,7 @@ export default function Dashboard({
   const isFaculty = currentUser && currentUser.role === "FACULTY";
 
   const coursesToDisplay = courses;
+
 
   const handleUpdateCourse = () => {
     updateCourse();
@@ -146,9 +150,11 @@ export default function Dashboard({
                         className="wd-dashboard-course-description overflow-hidden"
                         style={{ height: "100px" }}
                       >
+
                         {course.description}{" "}
                       </Card.Text>
                       <div className="d-flex">
+
                         <Button
                           onClick={() => handleGoToCourse(course._id)}
                           variant="primary"
@@ -195,10 +201,12 @@ export default function Dashboard({
                           </button>
                         </div>
                       )}
+
                     </Card.Body>
                   </Card>
                 </Col>
               )
+
           )}
         </Row>
       </div>

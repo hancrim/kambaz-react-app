@@ -4,7 +4,7 @@ import { FaRegCircleXmark } from "react-icons/fa6";
 import { Dropdown } from "react-bootstrap";
 import { useState } from "react";
 import { FaCheckCircle } from "react-icons/fa";
-//import { useState } from "react";
+
 export default function QuizControlButtons({
   deleteQuiz,
   publishQuiz,
@@ -18,9 +18,8 @@ export default function QuizControlButtons({
 }) {
   const [isPublished, setIsPublished] = useState(quiz.is_published);
   const handlePublish = () => {
-    publishQuiz(quiz._id);
+    publishQuiz(quiz);
     setIsPublished(!isPublished);
-    // make quiz public
   };
 
   return (

@@ -31,7 +31,7 @@ export default function QuizDetailsEditor() {
   );
 
   const handleSavePublish = async () => {
-    const updatedQuiz = { ...quiz, is_published: !quiz.is_published };
+    const updatedQuiz = { ...quiz, is_published: true };
     if (qid !== "new") {
       const serverQuiz = await quizzesClient.updateQuiz(updatedQuiz);
       dispatch(updateQuiz(serverQuiz));
@@ -254,11 +254,9 @@ export default function QuizDetailsEditor() {
                   })
                 }
               />
-
             </div>
-            { quiz.allow_multiple_attempts && 
-              <div className=" mt-2"
-              id="wd-num-attempts">
+            {quiz.allow_multiple_attempts && (
+              <div className=" mt-2" id="wd-num-attempts">
                 <FormGroup as={Row} className="mb-3">
                   <FormLabel
                     column
@@ -273,12 +271,14 @@ export default function QuizDetailsEditor() {
                       type="number"
                       id="wd-num-attempts"
                       placeholder="2"
-                      onChange={(e) => setQuiz({ ...quiz, num_attempts: e.target.value })}
+                      onChange={(e) =>
+                        setQuiz({ ...quiz, num_attempts: e.target.value })
+                      }
                     />
                   </Col>
                 </FormGroup>
               </div>
-            }
+            )}
             <div className="d-flex" id="wd-answers-details">
               <FormGroup>
                 <FormLabel

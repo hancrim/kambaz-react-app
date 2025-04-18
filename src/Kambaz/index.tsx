@@ -23,6 +23,8 @@ export default function Kambaz() {
     image: "green.jpeg",
     description: "New Description",
   });
+
+
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [enrolling, setEnrolling] = useState<boolean>(false);
   const findCoursesForUser = async () => {
@@ -31,6 +33,7 @@ export default function Kambaz() {
       setCourses(courses);
     } catch (error) {
       console.error(error);
+
     }
   };
   const fetchCourses = async () => {
