@@ -7,6 +7,7 @@ import { updateQuiz } from "./reducer";
 import * as quizzesClient from "./client";
 import * as coursesClient from "../client";
 import { useState } from "react";
+import { FaPlus } from "react-icons/fa6";
 
 export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
   const { cid, qid } = useParams();
@@ -115,6 +116,31 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
       await coursesClient.createQuizForCourse(cid as string, quiz);
     }
   };
+
+  const addNewQuestion = () => {
+    const newQuestionIndex = quiz.questions.length + 1;
+    const newQuestion = {
+        _id: `${qid}-${newQuestionIndex + 1}`,
+        question_title: "New Question",
+        question_text: "New Question",
+        question_type: "Multiple Choice",
+        question_points: 0,
+        answers: [
+          {answer_text: "Option 1", is_correct: true },
+          {answer_text: "Option 2", is_correct: false },
+          {answer_text: "Option 3", is_correct: false },
+          {answer_text: "Option 4", is_correct: false },
+        ]
+      }
+      const updatedQuiz = {
+        ...quiz,
+        questions: [...quiz.questions, newQuestion]
+      };
+
+      setQuiz(updatedQuiz);
+      //handleQuestionUpdate(newQuestionIndex, updatedQuiz);
+      handleChange(updatedQuiz);
+  }
 
   return (
     <div>
@@ -234,7 +260,15 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
           </ListGroup.Item>
         ))}
       </ListGroup>
-
+      <div className="d-flex justify-content-end mb-2">
+              <Button
+                variant="outline-danger"
+                className="me-2"
+                onClick={addNewQuestion}>
+                <FaPlus className="me-2" />
+                Add Another Question
+              </Button>
+            </div>
       <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`}>
         <Button
           id="wd-cancel"

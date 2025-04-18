@@ -77,6 +77,7 @@ export default function Quizzes() {
 
   const calculateTotalPoints = (quiz: { questions: any[]; points: any }) => {
     // Check if quiz has questions array
+    console.log(JSON.stringify(quiz));
     if (!quiz.questions || !Array.isArray(quiz.questions)) {
       return quiz.points || 0; // Return the overall quiz points if questions not available
     }
