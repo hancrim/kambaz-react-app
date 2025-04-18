@@ -40,7 +40,7 @@ export default function Profile() {
             }
           />
           <FormControl
-            defaultValue={profile.password}
+            value={profile.password}
             id="wd-password"
             className="mb-2"
             onChange={(e) =>
@@ -48,8 +48,7 @@ export default function Profile() {
             }
           />
           <FormControl
-            defaultValue={profile.firstName}
-            placeholder="First Name"
+            value={profile.firstName}
             id="wd-firstname"
             className="mb-2"
             onChange={(e) =>
@@ -57,8 +56,7 @@ export default function Profile() {
             }
           />
           <FormControl
-            defaultValue={profile.lastName}
-            placeholder="Last Name"
+            value={profile.lastName}
             id="wd-lastname"
             className="mb-2"
             onChange={(e) =>
@@ -66,25 +64,27 @@ export default function Profile() {
             }
           />
           <FormControl
-            defaultValue={profile.dob}
+            value={profile.dob}
             id="wd-dob"
             className="mb-2"
             onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
             type="date"
           />
           <FormControl
-            defaultValue={profile.email}
+            value={profile.email}
             id="wd-email"
             placeholder="Email"
             className="mb-2"
             onChange={(e) => setProfile({ ...profile, email: e.target.value })}
           />
           <select
+            value={profile.role}
             onChange={(e) => setProfile({ ...profile, role: e.target.value })}
             className="form-control mb-2"
             value={profile.role}
             id="wd-role"
           >
+            <option value="USER">User</option>
             <option value="ADMIN">Admin</option>
             <option value="FACULTY">Faculty</option>
             <option value="STUDENT">Student</option>

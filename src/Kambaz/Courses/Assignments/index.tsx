@@ -18,6 +18,7 @@ export default function Assignments() {
   const { cid } = useParams();
   const { assignments } = useSelector((state: any) => state.assignmentReducer);
   const dispatch = useDispatch();
+
   const fetchAssignments = async () => {
     const assignments = await coursesClient.findAssignmentsForCourse(
       cid as string

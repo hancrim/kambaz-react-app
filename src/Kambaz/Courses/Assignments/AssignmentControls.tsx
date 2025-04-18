@@ -17,7 +17,7 @@ export default function AssignmentControls() {
   return (
     <div id="wd-modules-controls">
       <div
-        id="flex-row-container"
+        className="d-flex"
         style={{
           justifyContent: "space-between",
           paddingLeft: "5px",
@@ -25,7 +25,7 @@ export default function AssignmentControls() {
         }}
       >
         <div>
-          <InputGroup size="lg" className="mb-3 w-40 d-flex">
+          <InputGroup size="lg" className="w-40 d-flex">
             <InputGroup.Text>
               <FaSearch />
             </InputGroup.Text>

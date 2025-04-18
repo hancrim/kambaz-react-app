@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { setCurrentUser } from "./reducer";
 import { useDispatch } from "react-redux";
 import * as client from "./client";
+const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 // import * as db from "../Database";
 
 export default function Signin() {
@@ -10,6 +11,7 @@ export default function Signin() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const signin = async () => {
+    console.log("Backend URL:", REMOTE_SERVER);
     const user = await client.signin(credentials);
     if (!user) return;
     dispatch(setCurrentUser(user));
