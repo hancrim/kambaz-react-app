@@ -1,46 +1,63 @@
-import { useState } from "react";
-import { Button } from "react-bootstrap";
+import { useState, useEffect } from "react";
 import { FaCheck } from "react-icons/fa6";
 import Editor from "react-simple-wysiwyg";
 
 export default function TrueFalseQuestionEditor({
-  currentQuiz,
   questionNum,
   curQuestion,
-  questionIndex,
   onQuestionUpdate,
 }: {
-  currentQuiz: any;
-  questionNum: any;
+  questionNum?: any;
   curQuestion: any;
-  questionIndex: number;
   onQuestionUpdate: (updatedQuestion: any) => void;
 }) {
   const [question, setUpdatedQuestion] = useState(curQuestion);
   const [questionValue, setQuestionValue] = useState(
-    question.question_text || ""
+    curQuestion.question_text || ""
   );
 
-  // Submit all changes to parent on update
-  const handleUpdate = () => {
-    onQuestionUpdate(question);
-  };
+  // Track if we need to notify parent of changes
+  const [shouldNotifyParent, setShouldNotifyParent] = useState(false);
+
+  // Update local state when parent props change (e.g., for cancel)
+  useEffect(() => {
+    // Prevent infinite loop by directly setting state without triggering notification
+    setUpdatedQuestion(curQuestion);
+    setQuestionValue(curQuestion.question_text || "");
+    setShouldNotifyParent(false); // Reset notification flag
+  }, [curQuestion]);
+
+  // Only notify parent when we explicitly set the flag
+  useEffect(() => {
+    if (shouldNotifyParent) {
+      onQuestionUpdate(question);
+      setShouldNotifyParent(false); // Reset flag after notification
+    }
+  }, [shouldNotifyParent, question, onQuestionUpdate]);
+
   const handleCorrectAnswerChange = (answerIndex: number) => {
-    setUpdatedQuestion({
+    const updatedQuestion = {
       ...question,
       answers: question.answers.map((a: any, i: number) => ({
         ...a,
         is_correct: i === answerIndex, // Only the selected answer is true
       })),
-    });
+    };
+
+    setUpdatedQuestion(updatedQuestion);
+    setShouldNotifyParent(true); // Set flag to notify parent
   };
 
   const handleQuestionTextChange = (e: any) => {
-    setQuestionValue(e.target.value);
+    const newValue = e.target.value;
+    setQuestionValue(newValue);
+
     setUpdatedQuestion({
       ...question,
-      question_text: e.target.value,
+      question_text: newValue,
     });
+
+    setShouldNotifyParent(true); // Set flag to notify parent
   };
 
   return (
@@ -63,12 +80,13 @@ export default function TrueFalseQuestionEditor({
         {question.answers.map((answer: any, index: number) => (
           <div
             className="border border-1 border-secondary rounded p-2 mb-2 d-flex align-items-center justify-content-between"
-            key={answer._id}
+            key={index}
           >
             <div className="d-flex align-items-center">
               <input
                 type="radio"
-                name="correctAnswer"
+                id={`wd-correct-answer-${questionNum}-${index}`}
+                name={`correctAnswer-${questionNum}`}
                 className="me-2"
                 checked={answer.is_correct}
                 onChange={() => handleCorrectAnswerChange(index)}
@@ -83,12 +101,6 @@ export default function TrueFalseQuestionEditor({
             </div>
           </div>
         ))}
-      </div>
-      <div>
-        <Button className="btn-secondary mt-2 me-2">Cancel</Button>
-        <Button className="btn-danger mt-2 me-2" onClick={handleUpdate}>
-          Update
-        </Button>
       </div>
     </div>
   );

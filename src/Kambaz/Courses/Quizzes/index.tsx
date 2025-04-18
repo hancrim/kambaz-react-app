@@ -51,13 +51,15 @@ export default function Quizzes() {
     dispatch(deleteQuiz(quizId));
   };
   const toggleQuizPublishStatus = async (quiz: any) => {
+    console.log("Before toggle:", quiz.is_published);
     const updatedQuiz = { ...quiz, is_published: !quiz.is_published };
-    await quizzesClient.updateQuiz(updatedQuiz);
+    const updatedQuizBackEnd = await quizzesClient.updateQuiz(updatedQuiz);
     dispatch(
       setQuizzes(
-        quizzes.map((q: any) => (q._id === quiz._id ? updatedQuiz : q))
+        quizzes.map((q: any) => (q._id === quiz._id ? updatedQuizBackEnd : q))
       )
     );
+    console.log("After toggle:", quiz.is_published);
   };
 
   const [, setName] = useState("");
@@ -78,7 +80,7 @@ export default function Quizzes() {
 
   const calculateTotalPoints = (quiz: { questions: any[]; points: any }) => {
     // Check if quiz has questions array
-    console.log(JSON.stringify(quiz));
+
     if (!quiz.questions || !Array.isArray(quiz.questions)) {
       return quiz.points || 0; // Return the overall quiz points if questions not available
     }

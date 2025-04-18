@@ -144,13 +144,27 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
       // Clear edited questions after save
       setEditedQuestions(new Set());
     } else {
-      await coursesClient.createQuizForCourse(cid as string, quiz);
+      const createdQuiz = await coursesClient.createQuizForCourse(
+        cid as string,
+        quiz
+      );
+      if (createdQuiz) {
+        dispatch(updateQuiz(createdQuiz));
+        setQuiz(createdQuiz);
+        setOriginalQuiz({ ...createdQuiz });
+        setEditedQuestions(new Set());
+      }
     }
+  };
+
+  const saveAllChanges = async () => {
+    // Save all changes at once
+    await handleChange(quiz);
   };
 
   const saveQuestion = async (index: number) => {
     // Save just this question
-    handleChange(quiz);
+    await handleChange(quiz);
   };
 
   const cancelQuestionChanges = (index: number) => {
@@ -193,6 +207,18 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
       questions: [...quiz.questions, newQuestion],
     };
 
+    setQuiz(updatedQuiz);
+    handleChange(updatedQuiz);
+  };
+
+  const deleteQuestion = (index: number) => {
+    const updatedQuestions = quiz.questions.filter(
+      (q: any, i: number) => i !== index
+    );
+    const updatedQuiz = {
+      ...quiz,
+      questions: updatedQuestions,
+    };
     setQuiz(updatedQuiz);
     handleChange(updatedQuiz);
   };
@@ -249,8 +275,6 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
             </div>
             {q.question_type === "Multiple Choice" && (
               <MultipleChoiceQuestionEditor
-                currentQuiz={quiz}
-                questionIndex={index}
                 onQuestionUpdate={(updatedQuestion) =>
                   handleQuestionUpdate(index, updatedQuestion)
                 }
@@ -260,8 +284,6 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
             )}
             {q.question_type === "True or False" && (
               <TrueFalseQuestionEditor
-                currentQuiz={quiz}
-                questionIndex={index}
                 onQuestionUpdate={(updatedQuestion) =>
                   handleQuestionUpdate(index, updatedQuestion)
                 }
@@ -275,8 +297,6 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
             )}
             {q.question_type === "Fill in the Blank" && (
               <MultipleChoiceQuestionEditor
-                currentQuiz={quiz}
-                questionIndex={index}
                 onQuestionUpdate={(updatedQuestion) =>
                   handleQuestionUpdate(index, updatedQuestion)
                 }
@@ -311,17 +331,7 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
                 id={`delete-question-${index}`}
                 variant="outline-danger"
                 className="ms-2"
-                onClick={() => {
-                  const updatedQuestions = quiz.questions.filter(
-                    (q: any, i: number) => i !== index
-                  );
-                  const updatedQuiz = {
-                    ...quiz,
-                    questions: updatedQuestions,
-                  };
-                  setQuiz(updatedQuiz);
-                  handleChange(updatedQuiz);
-                }}
+                onClick={() => deleteQuestion(index)}
               >
                 Delete
               </Button>
@@ -346,6 +356,16 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
           size="lg"
         >
           Cancel
+        </Button>
+      </Link>
+      <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`}>
+        <Button
+          id="wd-save"
+          className="btn-success float-end me-2"
+          size="lg"
+          onClick={saveAllChanges}
+        >
+          Save All Changes
         </Button>
       </Link>
     </div>
