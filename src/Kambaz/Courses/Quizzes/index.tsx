@@ -145,6 +145,7 @@ export default function Quizzes() {
               </div>
             )}
             {quizzes.map((quiz: any, index: number) => (
+              (isFaculty || (!isFaculty && quiz.is_published)) && (
               <ListGroup.Item className="wd-lesson p-3 ps-1">
                 <div
                   style={{
@@ -248,7 +249,7 @@ export default function Quizzes() {
                     </div>
                   )}
                 </div>
-              </ListGroup.Item>
+              </ListGroup.Item>)
             ))}
           </ListGroup>
         </ListGroup.Item>
