@@ -1,9 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { FaPencil, FaTrash, FaCheck, FaPlus } from "react-icons/fa6";
 import Editor from "react-simple-wysiwyg";
-
-// import { useNavigate, useParams } from "react-router-dom";
 
 export default function MultipleChoiceQuestionEditor({
   currentQuiz,
@@ -23,22 +21,55 @@ export default function MultipleChoiceQuestionEditor({
   const [questionValue, setQuestionValue] = useState(
     question.question_text || ""
   );
+  const [originalQuestion, setOriginalQuestion] = useState(curQuestion);
+
   // Use an array of booleans instead of an object
   const [editingAnswers, setEditingAnswers] = useState(
     // Initialize all answers to be in editing mode by default
     Array(question.answers.length).fill(false)
   );
 
-  const handleAnswerChange = (answerIndex: number, newValue: string) => {
-    setUpdatedQuestion({
-      ...question,
-      answers: question.answers.map((a: any, i: number) => {
-        if (i === answerIndex) {
-          return { ...a, answer_text: newValue };
-        }
-        return a;
-      }),
-    });
+  // Keep original question in sync with props
+  useEffect(() => {
+    setOriginalQuestion({ ...curQuestion });
+  }, [curQuestion]);
+
+  // Update parent component whenever question state changes
+  useEffect(() => {
+    onQuestionUpdate(question);
+  }, [question, onQuestionUpdate]);
+
+  // Temporary state to hold answer text while editing
+  const [tempAnswerText, setTempAnswerText] = useState("");
+
+  const handleAnswerKeyPress = (
+    event: React.KeyboardEvent,
+    answerIndex: number
+  ) => {
+    // Update answer only when Enter key is pressed
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent form submission
+
+      // Update the answer with the temporary text
+      setUpdatedQuestion({
+        ...question,
+        answers: question.answers.map((a: any, i: number) => {
+          if (i === answerIndex) {
+            return { ...a, answer_text: tempAnswerText };
+          }
+          return a;
+        }),
+      });
+
+      // Exit editing mode for this answer
+      const newEditingAnswers = [...editingAnswers];
+      newEditingAnswers[answerIndex] = false;
+      setEditingAnswers(newEditingAnswers);
+    }
+  };
+
+  const handleTempAnswerChange = (value: string) => {
+    setTempAnswerText(value);
   };
 
   const handleCorrectAnswerChange = (answerIndex: number) => {
@@ -59,17 +90,34 @@ export default function MultipleChoiceQuestionEditor({
     });
   };
 
-  // Submit all changes to parent on update
-  const handleUpdate = () => {
-    onQuestionUpdate(question);
-  };
-
   // Toggle editing for a specific answer
   const toggleEditingForAnswer = (index: number) => {
     const newEditingAnswers = [...editingAnswers];
     newEditingAnswers[index] = !newEditingAnswers[index];
     setEditingAnswers(newEditingAnswers);
+
+    // If enabling editing, set the temporary text to the current answer text
+    if (!newEditingAnswers[index]) {
+      // If disabling editing without pressing Enter, don't save changes
+      setTempAnswerText("");
+    } else {
+      // If enabling editing, set temporary text to current answer
+      const currentAnswer = question.answers[index];
+      if (currentAnswer) {
+        setTempAnswerText(currentAnswer.answer_text);
+      }
+    }
   };
+
+  // Reset to original state if curQuestion changes (when parent triggers cancel)
+  useEffect(() => {
+    setUpdatedQuestion(curQuestion);
+    setQuestionValue(curQuestion.question_text || "");
+    // Reset editing state for answers when question changes
+    if (curQuestion.answers) {
+      setEditingAnswers(Array(curQuestion.answers.length).fill(false));
+    }
+  }, [curQuestion]);
 
   return (
     <div
@@ -104,13 +152,13 @@ export default function MultipleChoiceQuestionEditor({
         {question.answers.map((answer: any, index: number) => (
           <div
             className="border border-1 border-secondary rounded p-2 mb-2 d-flex align-items-center justify-content-between"
-            key={answer._id}
+            key={index}
           >
             <div className="d-flex align-items-center">
               {questionType === "Multiple Choice" && (
                 <input
                   type="radio"
-                  id={`wd-correct-answer-${questionNum}`}
+                  id={`wd-correct-answer-${questionNum}-${index}`}
                   name={`correctAnswer-${questionNum}`}
                   className="me-2"
                   checked={answer.is_correct}
@@ -123,7 +171,13 @@ export default function MultipleChoiceQuestionEditor({
                   className="form-control w-50 d-inline-block"
                   defaultValue={answer.answer_text}
                   onChange={(e) => {
-                    handleAnswerChange(index, e.target.value);
+                    handleTempAnswerChange(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    handleAnswerKeyPress(e, index);
+                  }}
+                  onFocus={() => {
+                    setTempAnswerText(answer.answer_text);
                   }}
                 />
               )}
@@ -179,13 +233,6 @@ export default function MultipleChoiceQuestionEditor({
         >
           <FaPlus className="me-2" />
           Add Another Answer
-        </Button>
-      </div>
-
-      <div>
-        <Button className="btn-secondary mt-2 me-2">Cancel</Button>
-        <Button className="btn-danger mt-2 me-2" onClick={handleUpdate}>
-          Update
         </Button>
       </div>
     </div>

@@ -6,13 +6,22 @@ import TrueFalseQuestionEditor from "./TrueFalseQuestionEditor";
 import { updateQuiz } from "./reducer";
 import * as quizzesClient from "./client";
 import * as coursesClient from "../client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 
 export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
   const { cid, qid } = useParams();
   const dispatch = useDispatch();
   const [quiz, setQuiz] = useState<any>(curQuiz);
+  const [originalQuiz, setOriginalQuiz] = useState<any>(curQuiz);
+  const [editedQuestions, setEditedQuestions] = useState<Set<number>>(
+    new Set()
+  );
+
+  // Save the original quiz when first loaded
+  useEffect(() => {
+    setOriginalQuiz({ ...curQuiz });
+  }, [curQuiz]);
 
   const handleQuestionTypeChange = (index: number, newType: string) => {
     const updatedQuestions = [...quiz.questions];
@@ -85,7 +94,8 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
     };
 
     setQuiz(updatedQuiz);
-    handleChange(updatedQuiz);
+    // Mark this question as edited
+    setEditedQuestions((prev) => new Set([...prev, index]));
   };
 
   const handleQuestionUpdate = (
@@ -104,7 +114,25 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
     };
 
     setQuiz(updatedQuiz);
-    handleChange(updatedQuiz); // Send to server
+    // Mark this question as edited
+    setEditedQuestions((prev) => new Set([...prev, questionIndex]));
+  };
+
+  const handleInputChange = (index: number, field: string, value: any) => {
+    const updatedQuestions = [...quiz.questions];
+    updatedQuestions[index] = {
+      ...updatedQuestions[index],
+      [field]: value,
+    };
+
+    const updatedQuiz = {
+      ...quiz,
+      questions: updatedQuestions,
+    };
+
+    setQuiz(updatedQuiz);
+    // Mark this question as edited
+    setEditedQuestions((prev) => new Set([...prev, index]));
   };
 
   const handleChange = async (curQuiz: any) => {
@@ -112,35 +140,62 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
       const newQuiz = await quizzesClient.updateQuiz(curQuiz);
       dispatch(updateQuiz(newQuiz));
       setQuiz(newQuiz);
+      setOriginalQuiz({ ...newQuiz });
+      // Clear edited questions after save
+      setEditedQuestions(new Set());
     } else {
       await coursesClient.createQuizForCourse(cid as string, quiz);
     }
   };
 
-  const addNewQuestion = () => {
-    const newQuestionIndex = quiz.questions.length + 1;
-    const newQuestion = {
-        _id: `${qid}-${newQuestionIndex + 1}`,
-        question_title: "New Question",
-        question_text: "New Question",
-        question_type: "Multiple Choice",
-        question_points: 0,
-        answers: [
-          {answer_text: "Option 1", is_correct: true },
-          {answer_text: "Option 2", is_correct: false },
-          {answer_text: "Option 3", is_correct: false },
-          {answer_text: "Option 4", is_correct: false },
-        ]
-      }
-      const updatedQuiz = {
-        ...quiz,
-        questions: [...quiz.questions, newQuestion]
-      };
+  const saveQuestion = async (index: number) => {
+    // Save just this question
+    handleChange(quiz);
+  };
 
-      setQuiz(updatedQuiz);
-      //handleQuestionUpdate(newQuestionIndex, updatedQuiz);
-      handleChange(updatedQuiz);
-  }
+  const cancelQuestionChanges = (index: number) => {
+    // Revert just this question to original state
+    if (!originalQuiz || !originalQuiz.questions) return;
+
+    const updatedQuestions = [...quiz.questions];
+    updatedQuestions[index] = { ...originalQuiz.questions[index] };
+
+    const updatedQuiz = {
+      ...quiz,
+      questions: updatedQuestions,
+    };
+
+    setQuiz(updatedQuiz);
+
+    // Remove this question from edited set
+    const newEdited = new Set(editedQuestions);
+    newEdited.delete(index);
+    setEditedQuestions(newEdited);
+  };
+
+  const addNewQuestion = () => {
+    const newQuestionIndex = quiz.questions.length;
+    const newQuestion = {
+      _id: `${qid}-${newQuestionIndex + 1}`,
+      question_title: "New Question",
+      question_text: "New Question",
+      question_type: "Multiple Choice",
+      question_points: 0,
+      answers: [
+        { answer_text: "Option 1", is_correct: true },
+        { answer_text: "Option 2", is_correct: false },
+        { answer_text: "Option 3", is_correct: false },
+        { answer_text: "Option 4", is_correct: false },
+      ],
+    };
+    const updatedQuiz = {
+      ...quiz,
+      questions: [...quiz.questions, newQuestion],
+    };
+
+    setQuiz(updatedQuiz);
+    handleChange(updatedQuiz);
+  };
 
   return (
     <div>
@@ -158,19 +213,7 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
                 type="text"
                 value={q.question_title}
                 onChange={(e) => {
-                  const updatedQuestions = [...quiz.questions];
-                  updatedQuestions[index] = {
-                    ...updatedQuestions[index],
-                    question_title: e.target.value,
-                  };
-
-                  const updatedQuiz = {
-                    ...quiz,
-                    questions: updatedQuestions,
-                  };
-
-                  setQuiz(updatedQuiz);
-                  handleChange(updatedQuiz);
+                  handleInputChange(index, "question_title", e.target.value);
                 }}
               />
 
@@ -199,19 +242,7 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
                   className="form-control w-25"
                   value={q.question_points}
                   onChange={(e) => {
-                    const updatedQuestions = [...quiz.questions];
-                    updatedQuestions[index] = {
-                      ...updatedQuestions[index],
-                      question_points: e.target.value,
-                    };
-
-                    const updatedQuiz = {
-                      ...quiz,
-                      questions: updatedQuestions,
-                    };
-
-                    setQuiz(updatedQuiz);
-                    handleChange(updatedQuiz);
+                    handleInputChange(index, "question_points", e.target.value);
                   }}
                 />
               </div>
@@ -257,18 +288,57 @@ export default function QuizQuestionEditor({ curQuiz }: { curQuiz: any }) {
                 }}
               />
             )}
+
+            <div className="d-flex justify-content-end mt-3">
+              <Button
+                id={`cancel-question-${index}`}
+                variant="outline-secondary"
+                className="me-2"
+                onClick={() => cancelQuestionChanges(index)}
+                disabled={!editedQuestions.has(index)}
+              >
+                Cancel
+              </Button>
+              <Button
+                id={`save-question-${index}`}
+                variant="success"
+                onClick={() => saveQuestion(index)}
+                disabled={!editedQuestions.has(index)}
+              >
+                Update
+              </Button>
+              <Button
+                id={`delete-question-${index}`}
+                variant="outline-danger"
+                className="ms-2"
+                onClick={() => {
+                  const updatedQuestions = quiz.questions.filter(
+                    (q: any, i: number) => i !== index
+                  );
+                  const updatedQuiz = {
+                    ...quiz,
+                    questions: updatedQuestions,
+                  };
+                  setQuiz(updatedQuiz);
+                  handleChange(updatedQuiz);
+                }}
+              >
+                Delete
+              </Button>
+            </div>
           </ListGroup.Item>
         ))}
       </ListGroup>
       <div className="d-flex justify-content-end mb-2">
-              <Button
-                variant="outline-danger"
-                className="me-2"
-                onClick={addNewQuestion}>
-                <FaPlus className="me-2" />
-                Add Another Question
-              </Button>
-            </div>
+        <Button
+          variant="outline-danger"
+          className="me-2"
+          onClick={addNewQuestion}
+        >
+          <FaPlus className="me-2" />
+          Add Another Question
+        </Button>
+      </div>
       <Link to={`/Kambaz/Courses/${cid}/Quizzes/${qid}`}>
         <Button
           id="wd-cancel"
