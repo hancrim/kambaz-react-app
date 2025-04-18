@@ -10,6 +10,7 @@ import { addQuiz, setQuizzes } from "./reducer";
 import { useEffect, useState } from "react";
 import * as coursesClient from "../client";
 import * as quizzesClient from "./client";
+import * as accountClient from "../../Account/client";
 import { deleteQuiz } from "./reducer";
 
 export default function Quizzes() {
@@ -93,6 +94,33 @@ export default function Quizzes() {
     );
   };
 
+  const [lastScores, setLastScores] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchLastScore = async () => {
+      if (!isFaculty) {
+        const quizIds = quizzes.map((quiz: any) => quiz._id);
+
+        // at least trying to be a little efficient w/ the promise all call
+        // shoutout software engineering
+        const scoresPromises = quizIds.map(async (quizId: any) => {
+          const answersForQuiz = await accountClient.findQuizAnswersForUser(
+            quizId
+          );
+          if (answersForQuiz && answersForQuiz.length > 0) {
+            return answersForQuiz[answersForQuiz.length - 1].score;
+          }
+          return 0;
+        });
+
+        const newScores = await Promise.all(scoresPromises);
+
+        setLastScores([...lastScores, ...newScores]);
+      }
+    };
+    fetchLastScore();
+  }, [currentUser, quizzes]);
+
   return (
     <div>
       <QuizControls
@@ -116,7 +144,7 @@ export default function Quizzes() {
                 Use the red add quiz button to create a quiz.
               </div>
             )}
-            {quizzes.map((quiz: any) => (
+            {quizzes.map((quiz: any, index: number) => (
               <ListGroup.Item className="wd-lesson p-3 ps-1">
                 <div
                   style={{
@@ -198,12 +226,13 @@ export default function Quizzes() {
                     </span>
                     <span className="body-text"> Questions </span>
                     <br />
-
-                    {currentUser && currentUser.role === "STUDENT" && (
+                    {currentUser && !isFaculty && (
                       <>
                         <span className="body-text">
-                          <b>Score:</b>
-                          {/* {quiz.score} TODO GET LAST SCORE HERE */}
+                          <b>Most Recent Score: </b>
+                          {lastScores && lastScores.length > index
+                            ? `${lastScores[index]}`
+                            : ""}
                         </span>
                       </>
                     )}
