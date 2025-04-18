@@ -71,11 +71,13 @@ export default function QuizEditor() {
           Quiz Questions
         </button>
       </div>
+      
       {activeTab === "details" ? (
         <QuizDetailsEditor />
       ) : (
         <QuizQuestionEditor curQuiz={currentQuiz} />
       )}
+      
     </div>
   );
 }
