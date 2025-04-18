@@ -1,0 +1,65 @@
+[
+  {
+    "_id": "Q101",
+    "title": "Propulsion Quiz",
+    "description": "This quiz is to test propulsion calculations.",
+    "instructions": "Take the quiz using a calculator",
+    "course": "RS101",
+    "quiz_type": "Graded Quiz",
+    "assignment_group": "Quizzes",
+    "shuffle_answers": true,
+    "has_time_limit": true,
+    "time_limit": 20,
+    "allow_multiple_attempts": true,
+    "num_attempts": 3,
+    "show_correct_answers": true,
+    "show_correct_answers_date": "2025-05-14",
+    "access_code": "",
+    "one_question_at_a_time": true,
+    "webcam_required": false,
+    "lock_questions_after_answering": false,
+    "is_published": true,
+    "due_date": "2025-05-13",
+    "avail_date": "2025-05-06",
+    "until_date": "2025-05-14",
+
+
+    "questions": [
+      {
+        "_id": "Q101-1",
+        "question_title": "Thrust Calculation",
+        "question_text": "What is the thrust of a rocket with a mass flow rate of 10 kg/s and an exhaust velocity of 3000 m/s?",
+        "question_type": "Multiple Choice",
+        "question_points": 1,
+        "answers": [
+          { "answer_text": "30,000 N", "is_correct": true },
+          { "answer_text": "3,000 N", "is_correct": false },
+          { "answer_text": "300 N", "is_correct": false },
+          { "answer_text": "30 N", "is_correct": false }
+        ]
+      },
+      {
+        "_id": "Q101-2",
+        "question_title": "Thrust-to-Weight Ratio",
+        "question_text": "Is the best thrust-to-weight ratio for a rocket 1:1?",
+        "question_type": "True or False",
+        "question_points": 1,
+        "answers": [
+          { "answer_text": "True", "is_correct": true },
+          { "answer_text": "False", "is_correct": false }
+        ]
+      },
+      {
+        "_id": "Q101-3",
+        "question_title": "Specific Impulse",
+        "question_text": "What is the specific impulse of a rocket engine that produces 5000 N of thrust and consumes 0.5 kg/s of propellant?",
+        "question_type": "Fill in the Blank",
+        "question_points": 1,
+        "answers": [
+          { "answer_text": "10 s", "is_correct": true },
+          { "answer_text": "10000 ms", "is_correct": true }
+        ]
+      }
+    ]
+  }
+]

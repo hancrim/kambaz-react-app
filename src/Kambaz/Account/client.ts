@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 export const USERS_API = `${REMOTE_SERVER}/api/users`;
@@ -61,6 +62,7 @@ export const createCourse = async (course: any) => {
   );
   return data;
 };
+
 export const findAllUsers = async () => {
   const response = await axiosWithCredentials.get(USERS_API);
   return response.data;
@@ -85,3 +87,21 @@ export const createUser = async (user: any) => {
   const response = await axios.post(`${USERS_API}`, user);
   return response.data;
 };
+
+
+export const createAnswerForQuiz = async (quizId: string, answer: any) => {
+  const response = await axiosWithCredentials.post(
+    `${USERS_API}/current/quizzes/${quizId}`,
+    answer
+  );
+  return response.data;
+}
+
+// returns {_id, user, quiz, answered, score} objects
+export const findQuizAnswersForUser = async (quizId : string) => {
+  const response = await axiosWithCredentials.get(
+    `${USERS_API}/current/quizzes/${quizId}`
+  );
+  return response.data;
+}
+

@@ -10,8 +10,11 @@ import { addAssignment } from "./Assignments/reducer";
 import * as coursesClient from "./client";
 import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-//import Quizzes from "./Quizzes";
-//import QuizDetails from "./Quizzes/QuizDetails";
+import Quizzes from "./Quizzes";
+import QuizDetails from "./Quizzes/QuizDetails";
+import QuizViewer from "./Quizzes/QuizViewer";
+import QuizEditor from "./Quizzes/QuizEditor";
+import QuizAnswerReview from "./Quizzes/QuizAnswerReview";
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();
@@ -66,9 +69,22 @@ export default function Courses({ courses }: { courses: any[] }) {
                 <AssignmentEditor addAssignment={createAssignmentForCourse} />
               }
             />
-            {/* <Route path="Quizzes" element={<Quizzes />} /> */}
-            {/* <Route path="Quizzes/:qid" element={<QuizDetails />} /> */}
             <Route path="People" element={<PeopleTable users={users} />} />
+            <Route path="Quizzes" element={<Quizzes />} />
+            <Route path="Quizzes/:qid" element={<QuizDetails />} />
+            <Route path="Quizzes/:qid/Editor" element={<QuizEditor />} />
+            <Route
+              path="Quizzes/:qid/Editor/:isQuestionEdit"
+              element={<QuizEditor />}
+            />
+            <Route
+              path="Quizzes/:qid/Answers/:aid"
+              element={<QuizAnswerReview />}
+            />
+            <Route
+              path="Quizzes/:qid/Viewer/:isPreview"
+              element={<QuizViewer />}
+            />
           </Routes>
         </div>
       </div>

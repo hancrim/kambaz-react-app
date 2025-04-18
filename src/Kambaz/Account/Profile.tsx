@@ -73,6 +73,7 @@ export default function Profile() {
           <FormControl
             value={profile.email}
             id="wd-email"
+            placeholder="Email"
             className="mb-2"
             onChange={(e) => setProfile({ ...profile, email: e.target.value })}
           />
@@ -80,6 +81,7 @@ export default function Profile() {
             value={profile.role}
             onChange={(e) => setProfile({ ...profile, role: e.target.value })}
             className="form-control mb-2"
+            value={profile.role}
             id="wd-role"
           >
             <option value="USER">User</option>
