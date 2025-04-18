@@ -7,16 +7,21 @@ import { useSelector } from "react-redux";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { CiNoWaitingSign } from "react-icons/ci";
 import { FaCheck } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 
 export default function QuizEditor() {
-  const { qid } = useParams();
+  const { cid, qid, isQuestionEdit } = useParams();
   const quizzes = useSelector((state: any) => state.quizReducer.quizzes);
   const currentQuiz = quizzes.find((quiz: any) => quiz._id === qid);
-  const isPublished = (currentQuiz && currentQuiz.is_published) || false;
-
+  const isPublished = currentQuiz.is_published;
   const [activeTab, setActiveTab] = useState("details");
+
+  useEffect(() => {
+    if (isQuestionEdit) {
+      setActiveTab("questions");
+    }
+  }, [isQuestionEdit]);
 
   return (
     <div>
