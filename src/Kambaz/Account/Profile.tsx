@@ -67,7 +67,6 @@ export default function Profile() {
             defaultValue={
               profile && profile.dob ? profile.dob.split("T")[0] : ""
             }
-
             id="wd-dob"
             className="mb-2"
             onChange={(e) => setProfile({ ...profile, dob: e.target.value })}
@@ -84,7 +83,6 @@ export default function Profile() {
             value={profile.role}
             onChange={(e) => setProfile({ ...profile, role: e.target.value })}
             className="form-control mb-2"
-            value={profile.role}
             id="wd-role"
           >
             <option value="USER">User</option>

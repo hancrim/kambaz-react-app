@@ -137,7 +137,7 @@ export default function Quizzes() {
             <GoTriangleDown />
             <span className="bold-title" style={{ paddingLeft: "5px" }}>
               {" "}
-              ASSIGNMENT QUIZZES{" "}
+              QUIZZES{" "}
             </span>
           </div>
           <ListGroup className="wd-quizzes rounded-0 w-100">
@@ -146,113 +146,118 @@ export default function Quizzes() {
                 Use the red add quiz button to create a quiz.
               </div>
             )}
-            {quizzes.map((quiz: any, index: number) => (
-              (isFaculty || (!isFaculty && quiz.is_published)) && (
-              <ListGroup.Item className="wd-lesson p-3 ps-1">
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  {/* CHANGE THIS TO ROCKETSHIP */}
-                  <div>
-                    <PiNotePencilDuotone
-                      className="me-2 fs-3"
-                      style={{ color: "green" }}
-                    />
-                  </div>
-                  <div style={{ paddingLeft: "7px" }}>
-                    <Link
-                      to={handleQuizClick(quiz._id)}
-                      className="bold-title"
-                      style={{ textDecoration: "none", color: "black" }}
+            {quizzes.map(
+              (quiz: any, index: number) =>
+                (isFaculty || (!isFaculty && quiz.is_published)) && (
+                  <ListGroup.Item className="wd-lesson p-3 ps-1">
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                      }}
                     >
-                      {" "}
-                      <b>{quiz.title}</b>
-                    </Link>
-                    <br />
+                      {/* CHANGE THIS TO ROCKETSHIP */}
+                      <div>
+                        <PiNotePencilDuotone
+                          className="me-2 fs-3"
+                          style={{ color: "green" }}
+                        />
+                      </div>
+                      <div style={{ paddingLeft: "7px" }}>
+                        <Link
+                          to={handleQuizClick(quiz._id)}
+                          className="bold-title"
+                          style={{ textDecoration: "none", color: "black" }}
+                        >
+                          {" "}
+                          <b>{quiz.title}</b>
+                        </Link>
+                        <br />
 
-                    <span className="body-text">
-                      {quiz.avail_date && quiz.until_date
-                        ? (() => {
-                            const currentDate = new Date();
-                            const availDate = new Date(quiz.avail_date);
-                            const availUntil = new Date(quiz.until_date);
-
-                            if (currentDate < availDate) {
-                              return (
-                                <>
-                                  <b>Not available until</b>{" "}
-                                  {availDate.toLocaleDateString("en-US", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                  })}
-                                </>
-                              );
-                            } else if (
-                              currentDate >= availDate &&
-                              currentDate <= availUntil
-                            ) {
-                              return <b>Available</b>;
-                            } else {
-                              return <b> Closed </b>;
-                            }
-                          })()
-                        : "No availability information"}
-                    </span>
-                    <span> | </span>
-                    <span className="bold-text">Due </span>
-                    <span className="body-text">
-                      {""}
-                      {quiz.due_date
-                        ? new Date(quiz.due_date).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })
-                        : "No due date"}
-                    </span>
-                    <span> | </span>
-                    <span className="body-text">
-                      {""}
-                      {/* TODO ADD SUM OF POINTS HERE  */}
-                      {calculateTotalPoints(quiz)}
-                    </span>
-                    <span className="body-text"> pts </span>
-                    <span> | </span>
-                    <span className="body-text">
-                      {""}
-                      {quiz.questions && quiz.questions.length}
-                    </span>
-                    <span className="body-text"> Questions </span>
-                    <br />
-                    {currentUser && !isFaculty && (
-                      <>
                         <span className="body-text">
-                          <b>Most Recent Score: </b>
-                          {lastScores && lastScores.length > index
-                            ? `${lastScores[index]}`
-                            : ""}
+                          {quiz.avail_date && quiz.until_date
+                            ? (() => {
+                                const currentDate = new Date();
+                                const availDate = new Date(quiz.avail_date);
+                                const availUntil = new Date(quiz.until_date);
+
+                                if (currentDate < availDate) {
+                                  return (
+                                    <>
+                                      <b>Not available until</b>{" "}
+                                      {availDate.toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                      })}
+                                    </>
+                                  );
+                                } else if (
+                                  currentDate >= availDate &&
+                                  currentDate <= availUntil
+                                ) {
+                                  return <b>Available</b>;
+                                } else {
+                                  return <b> Closed </b>;
+                                }
+                              })()
+                            : "No availability information"}
                         </span>
-                      </>
-                    )}
-                  </div>
-                  {isFaculty && (
-                    <div className="ms-auto">
-                      <QuizControlButtons
-                        quiz={quiz}
-                        editQuiz={handleEdit}
-                        deleteQuiz={deleteQuizFromCourse}
-                        publishQuiz={toggleQuizPublishStatus}
-                      />
+                        <span> | </span>
+                        <span className="bold-text">Due </span>
+                        <span className="body-text">
+                          {""}
+                          {quiz.due_date
+                            ? new Date(quiz.due_date).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )
+                            : "No due date"}
+                        </span>
+                        <span> | </span>
+                        <span className="body-text">
+                          {""}
+                          {/* TODO ADD SUM OF POINTS HERE  */}
+                          {calculateTotalPoints(quiz)}
+                        </span>
+                        <span className="body-text"> pts </span>
+                        <span> | </span>
+                        <span className="body-text">
+                          {""}
+                          {quiz.questions && quiz.questions.length}
+                        </span>
+                        <span className="body-text"> Questions </span>
+                        <br />
+                        {currentUser && !isFaculty && (
+                          <>
+                            <span className="body-text">
+                              <b>Most Recent Score: </b>
+                              {lastScores && lastScores.length > index
+                                ? `${lastScores[index]}`
+                                : ""}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      {isFaculty && (
+                        <div className="ms-auto">
+                          <QuizControlButtons
+                            quiz={quiz}
+                            editQuiz={handleEdit}
+                            deleteQuiz={deleteQuizFromCourse}
+                            publishQuiz={toggleQuizPublishStatus}
+                          />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              </ListGroup.Item>)
-            ))}
+                  </ListGroup.Item>
+                )
+            )}
           </ListGroup>
         </ListGroup.Item>
       </ListGroup>

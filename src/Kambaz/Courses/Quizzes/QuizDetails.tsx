@@ -14,6 +14,23 @@ export default function QuizDetails() {
   const [currentAnswers, setCurrentAnswers] = useState([]);
   const [quiz, setQuiz] = useState<any>({});
   const isFaculty = currentUser.role === "FACULTY"; // Faculty get preview
+  const calculateTotalPoints = (quiz: { questions: any[]; points: any }) => {
+    // Check if quiz has questions array
+
+    if (!quiz.questions || !Array.isArray(quiz.questions)) {
+      return quiz.points || 0; // Return the overall quiz points if questions not available
+    }
+
+    // Sum up all question points
+    return quiz.questions.reduce(
+      (total: any, question: { question_points: number }) => {
+        // Use question_points if available, otherwise default to 1
+        const pointValue = question.question_points || 1;
+        return total + pointValue;
+      },
+      0
+    );
+  };
 
   useEffect(() => {
     const fetchUserQuizAnswers = async () => {
@@ -72,9 +89,7 @@ export default function QuizDetails() {
             <div>Shuffle Answers</div>
             <div>Time Limit</div>
             <div>Multiple Attempts</div>
-            { quiz.allow_multiple_attempts && 
-              <div>Number of Attempts</div>
-            }
+            {quiz.allow_multiple_attempts && <div>Number of Attempts</div>}
             <div>Show Correct Answers</div>
             <div>Access Code</div>
             <div>One Question at a Time</div>
@@ -83,14 +98,14 @@ export default function QuizDetails() {
           </div>
           <div className="text-start">
             <div>{quiz.quiz_type}</div>
-            <div>0{/* TODO - sum points here */}</div>
+            <div>{calculateTotalPoints(quiz)}</div>
             <div>{quiz.assignment_group}</div>
             <div>{quiz.shuffle_answers ? "No" : "Yes"}</div>
             <div>{quiz.has_time_limit ? quiz.time_limit : "20 Minutes"}</div>
             <div>{quiz.allow_multiple_attempts ? "Yes" : "No"}</div>
-            { quiz.allow_multiple_attempts && 
-              <div>{quiz.num_attempts ? quiz.num_attempts : "2" }</div>
-            }
+            {quiz.allow_multiple_attempts && (
+              <div>{quiz.num_attempts ? quiz.num_attempts : "2"}</div>
+            )}
             <div>
               {quiz.show_correct_answers
                 ? showCorrectAnswersDate.toLocaleDateString("en-US", {

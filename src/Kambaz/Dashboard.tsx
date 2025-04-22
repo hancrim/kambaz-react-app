@@ -20,7 +20,7 @@ export default function Dashboard({
   courses: any[];
   course: any;
   setCourse: (course: any) => void;
-  addNewCourse: () => void;
+  addNewCourse: () => any;
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
   enrolling: boolean;
@@ -33,7 +33,6 @@ export default function Dashboard({
 
   const coursesToDisplay = courses;
 
-
   const handleUpdateCourse = () => {
     updateCourse();
     setCourse({
@@ -45,9 +44,17 @@ export default function Dashboard({
     });
   };
 
-  const handleAddNewCourse = (course: any) => {
-    addNewCourse();
-    updateEnrollment(course, true);
+  const handleAddNewCourse = async () => {
+    try {
+      const newCourse = await addNewCourse();
+      if (newCourse && newCourse._id) {
+        updateEnrollment(newCourse._id, true);
+      } else {
+        console.error("Failed to get course ID after creation");
+      }
+    } catch (error) {
+      console.error("Error in handling new course:", error);
+    }
   };
 
   const handleGoToCourse = (courseId: string) => {
@@ -73,7 +80,7 @@ export default function Dashboard({
             <Button
               className="btn btn-primary float-end"
               id="wd-add-new-course-click"
-              onClick={() => handleAddNewCourse(course)}
+              onClick={() => handleAddNewCourse()}
             >
               {" "}
               Add{" "}
@@ -150,11 +157,9 @@ export default function Dashboard({
                         className="wd-dashboard-course-description overflow-hidden"
                         style={{ height: "100px" }}
                       >
-
                         {course.description}{" "}
                       </Card.Text>
                       <div className="d-flex">
-
                         <Button
                           onClick={() => handleGoToCourse(course._id)}
                           variant="primary"
@@ -201,12 +206,10 @@ export default function Dashboard({
                           </button>
                         </div>
                       )}
-
                     </Card.Body>
                   </Card>
                 </Col>
               )
-
           )}
         </Row>
       </div>

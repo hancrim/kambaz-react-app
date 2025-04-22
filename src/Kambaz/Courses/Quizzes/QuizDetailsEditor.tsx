@@ -251,6 +251,7 @@ export default function QuizDetailsEditor() {
                   setQuiz({
                     ...quiz,
                     allow_multiple_attempts: e.target.checked,
+                    num_attempts: e.target.checked ? 2 : 1,
                   })
                 }
               />
@@ -333,11 +334,11 @@ export default function QuizDetailsEditor() {
                     type="checkbox"
                     id="wd-one-question-at-a-time"
                     label="One Question at a Time"
-                    checked={quiz.one_question_at_a_time}
+                    checked={quiz.one_question_at_time}
                     onChange={(e) =>
                       setQuiz({
                         ...quiz,
-                        one_question_at_a_time: e.target.checked,
+                        one_question_at_time: e.target.checked,
                       })
                     }
                   />
