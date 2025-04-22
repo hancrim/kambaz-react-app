@@ -24,7 +24,6 @@ export default function Kambaz() {
     description: "New Description",
   });
 
-
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const [enrolling, setEnrolling] = useState<boolean>(false);
   const findCoursesForUser = async () => {
@@ -33,7 +32,6 @@ export default function Kambaz() {
       setCourses(courses);
     } catch (error) {
       console.error(error);
-
     }
   };
   const fetchCourses = async () => {
@@ -70,14 +68,14 @@ export default function Kambaz() {
   const addNewCourse = async () => {
     try {
       const newCourse = await courseClient.createCourse(course);
-      console.log("Adding new course: ", newCourse);
-      // dispatch(addCourse(newCourse));
       setCourses([...courses, newCourse]);
+      findCoursesForUser();
+      return newCourse; // Return the new course
     } catch (error) {
       console.error("Course Creation failed:", error);
+      return null;
     }
   };
-
   const deleteCourse = async (courseId: string) => {
     await courseClient.deleteCourse(courseId);
     setCourses(courses.filter((course) => course._id !== courseId));
